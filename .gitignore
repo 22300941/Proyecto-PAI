@@ -1,0 +1,56 @@
+# == Visual Studio ==
+.vs/
+*.dbmdl
+*.vssscc
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.opendb
+*.cachefile
+*.VC.opendb
+*.VC.db
+
+# == Build ==
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+build/
+
+# == User-specific files ==
+*.user
+*.suo
+*.userosscache
+*.rsuser
+*.sln.docstates
+
+# == Logs ==
+*.log
+
+# == NuGet ==
+*.nupkg
+.nupkg/
+packages/
+# Si usas restore automático, ignora esto:
+# *.nuget
+
+# == Backup files ==
+*.bak
+*.orig
+
+# == WPF specific ==
+*.g.cs
+*.g.i.cs
+Generated_Code/
+
+# == Temporary ==
+*.tmp
+*.temp
+*.pdb
+
+# == Other ==
+Thumbs.db
+desktop.ini
