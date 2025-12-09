@@ -19,15 +19,13 @@ namespace WPFProyecto_PAI
 
         private trabajadoresHelper trabajadorBD;
         private turnoHelper turnoBD;
-
-        // ID seleccionado desde el DataGrid
         private int trabajadorSeleccionadoId = 0;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            string cadenaConexion = "Server=.;Database=Paqueteria;Trusted_Connection=True;";
+            string cadenaConexion = @"Server=DESKTOP-LEHP21J;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
             turnoBD = new turnoHelper(cadenaConexion);
 
@@ -94,9 +92,17 @@ namespace WPFProyecto_PAI
 
         private void CargarVistaTrabajadores()
         {
-            dgTabla.ItemsSource = trabajadorBD.ObtenerTrabajadores();
-            trabajadorSeleccionadoId = 0;
+            try
+            {
+                dgTabla.ItemsSource = trabajadorBD.ObtenerTrabajadores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error cargando trabajadores: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                // opcional: log a archivo
+            }
 
+            trabajadorSeleccionadoId = 0;
             txtID.Text = "";
             txtNombre.Text = "";
             txtApellido.Text = "";
@@ -107,6 +113,7 @@ namespace WPFProyecto_PAI
 
             dgTabla.UnselectAll();
         }
+
 
         private void btnTrabajador_Click(object sender, RoutedEventArgs e)
         {

@@ -163,14 +163,13 @@ namespace BD
         public List<trabajadores> ObtenerTrabajadores()
         {
             List<trabajadores> lista = new List<trabajadores>();
-            SqlConnection sqlCon;
 
-            using (sqlCon = new SqlConnection(_conexion))
+            using (SqlConnection sqlCon = new SqlConnection(_conexion))
             {
                 sqlCon.Open();
 
                 SqlCommand sql = new SqlCommand(
-                    "SELECT id_personal, nombre, apellido, puesto, turno FROM dbo.trabajadores",
+                    "SELECT id_personal, nombre, puesto, turno, apellido FROM dbo.trabajadores",
                     sqlCon
                 );
 
@@ -182,9 +181,9 @@ namespace BD
                     {
                         id_personal = reader.GetInt32(0),
                         nombre = reader.GetString(1),
-                        apellido = reader.GetString(2),
-                        puesto = reader.GetString(3),
-                        turno = reader.GetInt32(4)
+                        puesto = reader.GetString(2),
+                        turno = reader.GetInt32(3),
+                        apellido = reader.GetString(4)
                     });
                 }
             }
