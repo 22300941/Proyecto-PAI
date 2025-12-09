@@ -1,9 +1,11 @@
-﻿using System;
+﻿using BD;
+using Microsoft.Data.SqlClient;
+using System;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using WPFProyecto_PAI.Tablas;
-using BD;
 
 namespace WPFProyecto_PAI
 {
@@ -20,12 +22,13 @@ namespace WPFProyecto_PAI
         private trabajadoresHelper trabajadorBD;
         private turnoHelper turnoBD;
         private int trabajadorSeleccionadoId = 0;
+        private string cadenaConexion;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            string cadenaConexion = @"Server=DESKTOP-LEHP21J;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
+            cadenaConexion = @"Server=DESKTOP-LEHP21J;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
             turnoBD = new turnoHelper(cadenaConexion);
 
@@ -90,36 +93,34 @@ namespace WPFProyecto_PAI
             btnEliminar.Visibility = Visibility.Visible;
         }
 
-        private void CargarVistaTrabajadores()
+        private void CargarTrabajadores()
         {
             try
             {
-                dgTabla.ItemsSource = trabajadorBD.ObtenerTrabajadores();
+                using (SqlConnection conn = new SqlConnection(cadenaConexion))
+                {
+                    conn.Open();
+
+                    string query = "SELECT id_personal, nombre, apellido, puesto, turno FROM trabajadores";
+
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgTabla.ItemsSource = dt.DefaultView;
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error cargando trabajadores: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                // opcional: log a archivo
+                MessageBox.Show("Error: " + ex.Message);
             }
-
-            trabajadorSeleccionadoId = 0;
-            txtID.Text = "";
-            txtNombre.Text = "";
-            txtApellido.Text = "";
-            txtPuesto.Text = "";
-            txtHoraInicio.Text = "";
-            txtHoraFin.Text = "";
-            txtDia.Text = "";
-
-            dgTabla.UnselectAll();
         }
-
 
         private void btnTrabajador_Click(object sender, RoutedEventArgs e)
         {
             modoActual = ModoVista.Trabajadores;
             MostrarCamposTrabajador();
-            CargarVistaTrabajadores();
+            CargarTrabajadores();
         }
 
         // ------------------ SELECCIÓN DEL GRID ------------------
@@ -184,7 +185,7 @@ namespace WPFProyecto_PAI
 
                 MessageBox.Show("Trabajador insertado correctamente.");
 
-                CargarVistaTrabajadores();
+                CargarTrabajadores();
             }
             catch (Exception ex)
             {
@@ -219,7 +220,7 @@ namespace WPFProyecto_PAI
 
                 MessageBox.Show("Trabajador actualizado.");
 
-                CargarVistaTrabajadores();
+                CargarTrabajadores();
             }
             catch (Exception ex)
             {
@@ -249,7 +250,7 @@ namespace WPFProyecto_PAI
 
                 MessageBox.Show("Trabajador eliminado.");
 
-                CargarVistaTrabajadores();
+                CargarTrabajadores();
             }
             catch (Exception ex)
             {
