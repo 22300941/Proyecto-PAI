@@ -1,41 +1,41 @@
 ﻿using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 using WPFProyecto_PAI.Tablas;
 
 namespace BD
 {
     public class turnoHelper
     {
-        private string _conexion;
+        private readonly string connectionString;
 
-        public turnoHelper(string conexion)
+        public turnoHelper(string conn)
         {
-            _conexion = conexion;
+            connectionString = conn;
         }
 
         public List<turno> ObtenerTurnos()
         {
-            List<turno> lista = new List<turno>();
+            List<turno> lista = new();
 
-            using (SqlConnection sqlCon = new SqlConnection(_conexion))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                sqlCon.Open();
+                conn.Open();
 
-                SqlCommand sql = new SqlCommand(
-                    "SELECT id_turno, hora_inicio, hora_fin, dia FROM dbo.turno",
-                    sqlCon
-                );
+                string query = "SELECT id_turno, hora_inicio, hora_fin, dia FROM turno";
 
-                SqlDataReader reader = sql.ExecuteReader();
-
-                while (reader.Read())
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlDataReader dr = cmd.ExecuteReader())
                 {
-                    lista.Add(new turno
+                    while (dr.Read())
                     {
-                        id_turno = reader.GetInt32(0),
-                        hora_inicio = TimeOnly.Parse(reader.GetValue(1).ToString()),
-                        hora_fin = TimeOnly.Parse(reader.GetValue(2).ToString()),
-                        dia = reader.GetString(3)
-                    });
+                        lista.Add(new turno
+                        {
+                            id_turno = dr.GetInt32(0),
+                            hora_inicio = TimeOnly.FromTimeSpan(dr.GetTimeSpan(1)),
+                            hora_fin = TimeOnly.FromTimeSpan(dr.GetTimeSpan(2)),
+                            dia = dr.GetString(3).Trim()
+                        });
+                    }
                 }
             }
 

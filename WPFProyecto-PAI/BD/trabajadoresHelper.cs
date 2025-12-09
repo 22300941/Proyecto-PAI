@@ -1,194 +1,170 @@
 ﻿using Microsoft.Data.SqlClient;
-using WPFProyecto_PAI.Tablas;
+using System;
+using System.Collections.Generic;
 
 namespace BD
 {
     public class trabajadoresHelper
     {
-        private string _conexion;
+        private readonly string connectionString;
 
-        public trabajadoresHelper(string conexion)
+        public trabajadoresHelper(string conn)
         {
-            _conexion = conexion;
+            connectionString = conn;
         }
 
-        // -----------------------------------------------------------
-        //  AGREGAR: Trabajador + Turno
-        // -----------------------------------------------------------
+        // ------------------------------------------------------
+        // INSERTAR TRABAJADOR + TURNO
+        // ------------------------------------------------------
         public void AgregarTrabajadorConTurno(
             string nombre,
             string apellido,
             string puesto,
-            TimeOnly hora_inicio,
-            TimeOnly hora_fin,
+            TimeOnly horaInicio,
+            TimeOnly horaFin,
             string dia)
         {
-            SqlConnection sqlCon;
-
-            using (sqlCon = new SqlConnection(_conexion))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                sqlCon.Open();
+                conn.Open();
 
-                // ===== 1. Insertar turno =====
-                SqlCommand sqlTurno = new SqlCommand(
-                    "INSERT INTO dbo.turno (hora_inicio, hora_fin, dia) " +
-                    "OUTPUT INSERTED.id_turno " +
-                    "VALUES (@hora_inicio, @hora_fin, @dia)",
-                    sqlCon
-                );
+                // 1. Insertar turno y obtener ID
+                string queryTurno =
+                    @"INSERT INTO turno (hora_inicio, hora_fin, dia)
+                      OUTPUT INSERTED.id_turno
+                      VALUES (@inicio, @fin, @dia)";
 
-                sqlTurno.Parameters.AddWithValue("@hora_inicio", hora_inicio);
-                sqlTurno.Parameters.AddWithValue("@hora_fin", hora_fin);
-                sqlTurno.Parameters.AddWithValue("@dia", dia);
+                int idTurno;
 
-                // Obtener id_turno generado
-                int id_turno = (int)sqlTurno.ExecuteScalar();
+                using (SqlCommand cmd = new SqlCommand(queryTurno, conn))
+                {
+                    cmd.Parameters.AddWithValue("@inicio", horaInicio.ToTimeSpan());
+                    cmd.Parameters.AddWithValue("@fin", horaFin.ToTimeSpan());
+                    cmd.Parameters.AddWithValue("@dia", dia);
 
-                // ===== 2. Insertar trabajador con FK =====
-                SqlCommand sqlTrabajador = new SqlCommand(
-                    "INSERT INTO dbo.trabajadores (nombre, apellido, puesto, turno) " +
-                    "VALUES (@nombre, @apellido, @puesto, @turno)",
-                    sqlCon
-                );
+                    idTurno = (int)cmd.ExecuteScalar();
+                }
 
-                sqlTrabajador.Parameters.AddWithValue("@nombre", nombre);
-                sqlTrabajador.Parameters.AddWithValue("@apellido", apellido);
-                sqlTrabajador.Parameters.AddWithValue("@puesto", puesto);
-                sqlTrabajador.Parameters.AddWithValue("@turno", id_turno);
+                // 2. Insertar trabajador con la FK del turno
+                string queryTrab =
+                    @"INSERT INTO trabajadores (nombre, apellido, puesto, turno) 
+                      VALUES (@nombre, @apellido, @puesto, @turno)";
 
-                sqlTrabajador.ExecuteNonQuery();
+                using (SqlCommand cmd = new SqlCommand(queryTrab, conn))
+                {
+                    cmd.Parameters.AddWithValue("@nombre", nombre);
+                    cmd.Parameters.AddWithValue("@apellido", apellido);
+                    cmd.Parameters.AddWithValue("@puesto", puesto);
+                    cmd.Parameters.AddWithValue("@turno", idTurno);
+
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
-        // -----------------------------------------------------------
-        //  ELIMINAR: Trabajador + su Turno
-        // -----------------------------------------------------------
-        public void EliminarTrabajadorConTurno(int id_personal)
-        {
-            SqlConnection sqlCon;
-
-            using (sqlCon = new SqlConnection(_conexion))
-            {
-                sqlCon.Open();
-
-                // 1. Obtener el id_turno vinculado
-                SqlCommand sqlGetTurno = new SqlCommand(
-                    "SELECT turno FROM dbo.trabajadores WHERE id_personal = @id",
-                    sqlCon
-                );
-                sqlGetTurno.Parameters.AddWithValue("@id", id_personal);
-
-                object turnoObj = sqlGetTurno.ExecuteScalar();
-                if (turnoObj == null) return;
-
-                int id_turno = (int)turnoObj;
-
-                // 2. Eliminar trabajador
-                SqlCommand sqlDeleteTrab = new SqlCommand(
-                    "DELETE FROM dbo.trabajadores WHERE id_personal = @id",
-                    sqlCon
-                );
-                sqlDeleteTrab.Parameters.AddWithValue("@id", id_personal);
-                sqlDeleteTrab.ExecuteNonQuery();
-
-                // 3. Eliminar turno (extensión)
-                SqlCommand sqlDeleteTurno = new SqlCommand(
-                    "DELETE FROM dbo.turno WHERE id_turno = @id_turno",
-                    sqlCon
-                );
-                sqlDeleteTurno.Parameters.AddWithValue("@id_turno", id_turno);
-                sqlDeleteTurno.ExecuteNonQuery();
-            }
-        }
-
-        // -----------------------------------------------------------
-        //  ACTUALIZAR: Trabajador + Turno
-        // -----------------------------------------------------------
+        // ------------------------------------------------------
+        // ACTUALIZAR TRABAJADOR + TURNO
+        // ------------------------------------------------------
         public void ActualizarTrabajadorConTurno(
-            int id_personal,
+            int idTrabajador,
             string nombre,
             string apellido,
             string puesto,
-            TimeOnly hora_inicio,
-            TimeOnly hora_fin,
+            TimeOnly horaInicio,
+            TimeOnly horaFin,
             string dia)
         {
-            SqlConnection sqlCon;
-
-            using (sqlCon = new SqlConnection(_conexion))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                sqlCon.Open();
+                conn.Open();
 
-                // 1. Obtener el turno actual
-                SqlCommand sqlGetTurno = new SqlCommand(
-                    "SELECT turno FROM dbo.trabajadores WHERE id_personal = @id",
-                    sqlCon
-                );
-                sqlGetTurno.Parameters.AddWithValue("@id", id_personal);
+                // Obtener turno asociado
+                int idTurno;
+                string queryGetTurno = "SELECT turno FROM trabajadores WHERE id_personal = @id";
 
-                int id_turno = (int)sqlGetTurno.ExecuteScalar();
+                using (SqlCommand cmd = new SqlCommand(queryGetTurno, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", idTrabajador);
+                    idTurno = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+
+                // 1. Actualizar turno
+                string queryTurno =
+                    @"UPDATE turno
+                      SET hora_inicio = @inicio, hora_fin = @fin, dia = @dia
+                      WHERE id_turno = @idTurno";
+
+                using (SqlCommand cmd = new SqlCommand(queryTurno, conn))
+                {
+                    cmd.Parameters.AddWithValue("@inicio", horaInicio.ToTimeSpan());
+                    cmd.Parameters.AddWithValue("@fin", horaFin.ToTimeSpan());
+                    cmd.Parameters.AddWithValue("@dia", dia);
+                    cmd.Parameters.AddWithValue("@idTurno", idTurno);
+
+                    cmd.ExecuteNonQuery();
+                }
 
                 // 2. Actualizar trabajador
-                SqlCommand sqlUpdateTrab = new SqlCommand(
-                    "UPDATE dbo.trabajadores SET nombre=@nombre, apellido=@apellido, puesto=@puesto " +
-                    "WHERE id_personal=@id",
-                    sqlCon
-                );
+                string queryTrab =
+                    @"UPDATE trabajadores
+                      SET nombre = @nombre,
+                          apellido = @apellido,
+                          puesto = @puesto
+                      WHERE id_personal = @id";
 
-                sqlUpdateTrab.Parameters.AddWithValue("@id", id_personal);
-                sqlUpdateTrab.Parameters.AddWithValue("@nombre", nombre);
-                sqlUpdateTrab.Parameters.AddWithValue("@apellido", apellido);
-                sqlUpdateTrab.Parameters.AddWithValue("@puesto", puesto);
-                sqlUpdateTrab.ExecuteNonQuery();
+                using (SqlCommand cmd = new SqlCommand(queryTrab, conn))
+                {
+                    cmd.Parameters.AddWithValue("@nombre", nombre);
+                    cmd.Parameters.AddWithValue("@apellido", apellido);
+                    cmd.Parameters.AddWithValue("@puesto", puesto);
+                    cmd.Parameters.AddWithValue("@id", idTrabajador);
 
-                // 3. Actualizar turno
-                SqlCommand sqlUpdateTurno = new SqlCommand(
-                    "UPDATE dbo.turno SET hora_inicio=@ini, hora_fin=@fin, dia=@dia " +
-                    "WHERE id_turno=@id_turno",
-                    sqlCon
-                );
-
-                sqlUpdateTurno.Parameters.AddWithValue("@id_turno", id_turno);
-                sqlUpdateTurno.Parameters.AddWithValue("@ini", hora_inicio);
-                sqlUpdateTurno.Parameters.AddWithValue("@fin", hora_fin);
-                sqlUpdateTurno.Parameters.AddWithValue("@dia", dia);
-
-                sqlUpdateTurno.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
-        // -----------------------------------------------------------
-        //  LEER: Obtener todos
-        // -----------------------------------------------------------
-        public List<trabajadores> ObtenerTrabajadores()
+        // ------------------------------------------------------
+        // ELIMINAR TRABAJADOR + TURNO
+        // ------------------------------------------------------
+        public void EliminarTrabajadorConTurno(int idTrabajador)
         {
-            List<trabajadores> lista = new List<trabajadores>();
-
-            using (SqlConnection sqlCon = new SqlConnection(_conexion))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                sqlCon.Open();
+                conn.Open();
 
-                SqlCommand sql = new SqlCommand(
-                    "SELECT id_personal, nombre, puesto, turno, apellido FROM dbo.trabajadores",
-                    sqlCon
-                );
+                int? idTurno = null;
 
-                SqlDataReader reader = sql.ExecuteReader();
-
-                while (reader.Read())
+                // Obtener turno (puede ser nulo)
+                string queryGetTurno = "SELECT turno FROM trabajadores WHERE id_personal = @id";
+                using (SqlCommand cmd = new SqlCommand(queryGetTurno, conn))
                 {
-                    lista.Add(new trabajadores
+                    cmd.Parameters.AddWithValue("@id", idTrabajador);
+                    var result = cmd.ExecuteScalar();
+
+                    if (result != DBNull.Value && result != null)
+                        idTurno = Convert.ToInt32(result);
+                }
+
+                // Eliminar trabajador
+                string queryTrab = "DELETE FROM trabajadores WHERE id_personal = @id";
+                using (SqlCommand cmd = new SqlCommand(queryTrab, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", idTrabajador);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Eliminar turno solo si existe
+                if (idTurno.HasValue)
+                {
+                    string queryTurno = "DELETE FROM turno WHERE id_turno = @id";
+                    using (SqlCommand cmd = new SqlCommand(queryTurno, conn))
                     {
-                        id_personal = reader.GetInt32(0),
-                        nombre = reader.GetString(1),
-                        puesto = reader.GetString(2),
-                        turno = reader.GetInt32(3),
-                        apellido = reader.GetString(4)
-                    });
+                        cmd.Parameters.AddWithValue("@id", idTurno.Value);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
-
-            return lista;
         }
     }
 }

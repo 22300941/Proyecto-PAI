@@ -128,28 +128,49 @@ namespace WPFProyecto_PAI
         {
             if (modoActual != ModoVista.Trabajadores) return;
 
-            if (dgTabla.SelectedItem is trabajadores t)
+            if (dgTabla.SelectedItem is DataRowView row)
             {
-                trabajadorSeleccionadoId = t.id_personal;
-
-                // Mostrar ID
-                txtID.Text = trabajadorSeleccionadoId.ToString();
-
-                txtNombre.Text = t.nombre;
-                txtApellido.Text = t.apellido;
-                txtPuesto.Text = t.puesto;
-
-                // Buscar turno
                 try
                 {
-                    var turnos = turnoBD.ObtenerTurnos();
-                    var turno = turnos.FirstOrDefault(x => x.id_turno == t.turno);
-
-                    if (turno != null)
+                    // Validar columnas antes de leer
+                    string[] columnas = { "id_personal", "nombre", "apellido", "puesto", "turno" };
+                    foreach (var col in columnas)
                     {
-                        txtHoraInicio.Text = turno.hora_inicio.ToString();
-                        txtHoraFin.Text = turno.hora_fin.ToString();
-                        txtDia.Text = turno.dia;
+                        if (!row.DataView.Table.Columns.Contains(col))
+                        {
+                            MessageBox.Show($"ERROR: La columna '{col}' no existe en el DataGrid.");
+                            return;
+                        }
+                    }
+
+                    // Asignar valores seguros
+                    txtID.Text = row["id_personal"]?.ToString() ?? "";
+                    txtNombre.Text = row["nombre"]?.ToString() ?? "";
+                    txtApellido.Text = row["apellido"]?.ToString() ?? "";
+                    txtPuesto.Text = row["puesto"]?.ToString() ?? "";
+
+                    // ==========================
+                    // Obtener el id_turno
+                    // ==========================
+                    if (row["turno"] == DBNull.Value)
+                    {
+                        txtHoraInicio.Text = "";
+                        txtHoraFin.Text = "";
+                        txtDia.Text = "";
+                        return;
+                    }
+
+                    int idTurno = Convert.ToInt32(row["turno"]);
+
+                    // Obtener turno desde BD
+                    var turnos = turnoBD.ObtenerTurnos();
+                    var t = turnos.FirstOrDefault(x => x.id_turno == idTurno);
+
+                    if (t != null)
+                    {
+                        txtHoraInicio.Text = t.hora_inicio.ToString("HH:mm");
+                        txtHoraFin.Text = t.hora_fin.ToString("HH:mm");
+                        txtDia.Text = t.dia;
                     }
                     else
                     {
@@ -158,12 +179,10 @@ namespace WPFProyecto_PAI
                         txtDia.Text = "";
                     }
                 }
-                catch { }
-            }
-            else
-            {
-                trabajadorSeleccionadoId = 0;
-                txtID.Text = "";
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al cargar selección: " + ex.Message);
+                }
             }
         }
 
@@ -174,12 +193,31 @@ namespace WPFProyecto_PAI
 
             try
             {
+                if (string.IsNullOrWhiteSpace(txtHoraInicio.Text) ||
+                    string.IsNullOrWhiteSpace(txtHoraFin.Text))
+                {
+                    MessageBox.Show("Debes escribir horas válidas (formato HH:mm).");
+                    return;
+                }
+
+                if (!TimeOnly.TryParse(txtHoraInicio.Text, out var hInicio))
+                {
+                    MessageBox.Show("Hora inicio inválida.");
+                    return;
+                }
+
+                if (!TimeOnly.TryParse(txtHoraFin.Text, out var hFin))
+                {
+                    MessageBox.Show("Hora fin inválida.");
+                    return;
+                }
+
                 trabajadorBD.AgregarTrabajadorConTurno(
                     txtNombre.Text,
                     txtApellido.Text,
                     txtPuesto.Text,
-                    TimeOnly.Parse(txtHoraInicio.Text),
-                    TimeOnly.Parse(txtHoraFin.Text),
+                    hInicio,
+                    hFin,
                     txtDia.Text
                 );
 
@@ -204,17 +242,22 @@ namespace WPFProyecto_PAI
                 return;
             }
 
-            trabajadorSeleccionadoId = int.Parse(txtID.Text);
+            if (!TimeOnly.TryParse(txtHoraInicio.Text, out var hInicio) ||
+                !TimeOnly.TryParse(txtHoraFin.Text, out var hFin))
+            {
+                MessageBox.Show("Horas inválidas (usa HH:mm).");
+                return;
+            }
 
             try
             {
                 trabajadorBD.ActualizarTrabajadorConTurno(
-                    trabajadorSeleccionadoId,
+                    int.Parse(txtID.Text),
                     txtNombre.Text,
                     txtApellido.Text,
                     txtPuesto.Text,
-                    TimeOnly.Parse(txtHoraInicio.Text),
-                    TimeOnly.Parse(txtHoraFin.Text),
+                    hInicio,
+                    hFin,
                     txtDia.Text
                 );
 
