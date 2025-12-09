@@ -11,91 +11,23 @@ namespace WPFProyecto_PAI
 {
     public partial class MainWindow : Window
     {
-        private enum ModoVista
-        {
-            Ninguno,
-            Trabajadores
-        }
-
-        private ModoVista modoActual = ModoVista.Ninguno;
-
         private trabajadoresHelper trabajadorBD;
         private turnoHelper turnoBD;
-        private int trabajadorSeleccionadoId = 0;
         private string cadenaConexion;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            // Inicializar helpers y cadena de conexión
+            // Cadena de conexion a la base de datos
             cadenaConexion = @"Server=DESKTOP-LEHP21J;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
+
+            // Inicializar helpers
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
             turnoBD = new turnoHelper(cadenaConexion);
-
-            // Inicialmente ocultar todos los campos
-            OcultarTodosLosCampos();
         }
 
-        private void OcultarTodosLosCampos()
-        {
-            lblID.Visibility = Visibility.Collapsed;
-            txtID.Visibility = Visibility.Collapsed;
-
-            lblNombre.Visibility = Visibility.Collapsed;
-            txtNombre.Visibility = Visibility.Collapsed;
-
-            lblApellido.Visibility = Visibility.Collapsed;
-            txtApellido.Visibility = Visibility.Collapsed;
-
-            lblPuesto.Visibility = Visibility.Collapsed;
-            txtPuesto.Visibility = Visibility.Collapsed;
-
-            lblHoraInicio.Visibility = Visibility.Collapsed;
-            txtHoraInicio.Visibility = Visibility.Collapsed;
-
-            lblHoraFin.Visibility = Visibility.Collapsed;
-            txtHoraFin.Visibility = Visibility.Collapsed;
-
-            lblDia.Visibility = Visibility.Collapsed;
-            txtDia.Visibility = Visibility.Collapsed;
-
-            btnInsertar.Visibility = Visibility.Collapsed;
-            btnEditar.Visibility = Visibility.Collapsed;
-            btnEliminar.Visibility = Visibility.Collapsed;
-        }
-
-        private void MostrarCamposTrabajador()
-        {
-            OcultarTodosLosCampos();
-
-            lblID.Visibility = Visibility.Visible;
-            txtID.Visibility = Visibility.Visible;
-
-            lblNombre.Visibility = Visibility.Visible;
-            txtNombre.Visibility = Visibility.Visible;
-
-            lblApellido.Visibility = Visibility.Visible;
-            txtApellido.Visibility = Visibility.Visible;
-
-            lblPuesto.Visibility = Visibility.Visible;
-            txtPuesto.Visibility = Visibility.Visible;
-
-            lblHoraInicio.Visibility = Visibility.Visible;
-            txtHoraInicio.Visibility = Visibility.Visible;
-
-            lblHoraFin.Visibility = Visibility.Visible;
-            txtHoraFin.Visibility = Visibility.Visible;
-
-            lblDia.Visibility = Visibility.Visible;
-            txtDia.Visibility = Visibility.Visible;
-
-            btnInsertar.Visibility = Visibility.Visible;
-            btnEditar.Visibility = Visibility.Visible;
-            btnEliminar.Visibility = Visibility.Visible;
-        }
-
-        // ------------------ CARGAR TRABAJADORES ------------------
+        // ------------------------------- TRABAJADORES -------------------------------
         private void CargarTrabajadores()
         {
             try
@@ -115,39 +47,29 @@ namespace WPFProyecto_PAI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
+                MessageBox.Show("Error al cargar trabajadores: " + ex.Message);
             }
         }
 
-        // ------------------ SECCION TRABAJADOR ------------------
-        private void btnTrabajador_Click(object sender, RoutedEventArgs e)
+        private void tabContenedor_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            modoActual = ModoVista.Trabajadores;
-            MostrarCamposTrabajador();
-            CargarTrabajadores();
+            if (!(e.Source is TabControl)) return;
+
+            if (tabContenedor.SelectedItem is TabItem tab)
+            {
+                if (tab.Header.ToString() == "Trabajadores")
+                {
+                    CargarTrabajadores();
+                }
+            }
         }
 
-        // ------------------ SELECCION EN TABLA ------------------
         private void dgTabla_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Cargar datos del trabajador seleccionado
-            if (modoActual != ModoVista.Trabajadores) return;
-
             if (dgTabla.SelectedItem is DataRowView row)
             {
                 try
                 {
-                    // Validar columnas antes de leer
-                    string[] columnas = { "id_personal", "nombre", "apellido", "puesto", "turno" };
-                    foreach (var col in columnas)
-                    {
-                        if (!row.DataView.Table.Columns.Contains(col))
-                        {
-                            MessageBox.Show($"ERROR: La columna '{col}' no existe en el DataGrid.");
-                            return;
-                        }
-                    }
-
                     txtID.Text = row["id_personal"]?.ToString() ?? "";
                     txtNombre.Text = row["nombre"]?.ToString() ?? "";
                     txtApellido.Text = row["apellido"]?.ToString() ?? "";
@@ -162,7 +84,6 @@ namespace WPFProyecto_PAI
                     }
 
                     int idTurno = Convert.ToInt32(row["turno"]);
-
                     var turnos = turnoBD.ObtenerTurnos();
                     var t = turnos.FirstOrDefault(x => x.id_turno == idTurno);
 
@@ -181,26 +102,16 @@ namespace WPFProyecto_PAI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al cargar selección: " + ex.Message);
+                    MessageBox.Show("Error al seleccionar registro: " + ex.Message);
                 }
             }
         }
 
-        // ------------------ INSERTAR ------------------
+        // ------------------------------- INSERTAR -------------------------------
         private void btnInsertar_Click(object sender, RoutedEventArgs e)
         {
-            // Insertar trabajador
-            if (modoActual != ModoVista.Trabajadores) return;
-
             try
             {
-                if (string.IsNullOrWhiteSpace(txtHoraInicio.Text) ||
-                    string.IsNullOrWhiteSpace(txtHoraFin.Text))
-                {
-                    MessageBox.Show("Debes escribir horas válidas (formato HH:mm).");
-                    return;
-                }
-
                 if (!TimeOnly.TryParse(txtHoraInicio.Text, out var hInicio))
                 {
                     MessageBox.Show("Hora inicio inválida.");
@@ -232,12 +143,9 @@ namespace WPFProyecto_PAI
             }
         }
 
-        // ------------------ EDITAR ------------------
+        // ------------------------------- EDITAR -------------------------------
         private void btnEditar_Click(object sender, RoutedEventArgs e)
         {
-            // Editar trabajador
-            if (modoActual != ModoVista.Trabajadores) return;
-
             if (string.IsNullOrWhiteSpace(txtID.Text))
             {
                 MessageBox.Show("Selecciona un trabajador primero.");
@@ -247,7 +155,7 @@ namespace WPFProyecto_PAI
             if (!TimeOnly.TryParse(txtHoraInicio.Text, out var hInicio) ||
                 !TimeOnly.TryParse(txtHoraFin.Text, out var hFin))
             {
-                MessageBox.Show("Horas inválidas (usa HH:mm).");
+                MessageBox.Show("Horas inválidas.");
                 return;
             }
 
@@ -273,26 +181,22 @@ namespace WPFProyecto_PAI
             }
         }
 
-        // ------------------ ELIMINAR ------------------
+        // ------------------------------- ELIMINAR -------------------------------
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            // Eliminar trabajador
-            if (modoActual != ModoVista.Trabajadores) return;
-
             if (string.IsNullOrWhiteSpace(txtID.Text))
             {
                 MessageBox.Show("Selecciona un trabajador primero.");
                 return;
             }
 
-            trabajadorSeleccionadoId = int.Parse(txtID.Text);
-
-            var confirmar = MessageBox.Show("¿Eliminar este trabajador?", "Confirmación", MessageBoxButton.YesNo);
-            if (confirmar != MessageBoxResult.Yes) return;
+            if (MessageBox.Show("¿Eliminar este trabajador?", "Confirmación",
+                                MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return;
 
             try
             {
-                trabajadorBD.EliminarTrabajadorConTurno(trabajadorSeleccionadoId);
+                trabajadorBD.EliminarTrabajadorConTurno(int.Parse(txtID.Text));
 
                 MessageBox.Show("Trabajador eliminado.");
 
@@ -304,7 +208,8 @@ namespace WPFProyecto_PAI
             }
         }
 
-        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
+        // ------------------------------- LIMPIAR -------------------------------
+        private void btnLimpiar_Click(object sender, RoutedEventArgs e)
         {
             txtID.Text = "";
             txtNombre.Text = "";
@@ -313,8 +218,6 @@ namespace WPFProyecto_PAI
             txtHoraInicio.Text = "";
             txtHoraFin.Text = "";
             txtDia.Text = "";
-            txtID.Focus();
         }
-
     }
 }

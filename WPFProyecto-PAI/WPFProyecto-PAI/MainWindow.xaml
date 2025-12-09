@@ -1,49 +1,129 @@
 ﻿<Window x:Class="WPFProyecto_PAI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WPFProyecto_PAI"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="39*"/>
-            <RowDefinition Height="178*"/>
-        </Grid.RowDefinitions>
-        <Label Content="PAQUETERIA" HorizontalAlignment="Center" Height="34" Margin="0,2,0,0" VerticalAlignment="Top" Width="124" FontSize="20"/>
-        <Button x:Name="Serviciocmd" Content="Servicio" HorizontalAlignment="Left" Height="26" Margin="100,41,0,0" VerticalAlignment="Top" Width="60"/>
-        <Button x:Name="Paquetecmd" Content="Paquete" HorizontalAlignment="Left" Margin="183,41,0,0" VerticalAlignment="Top" Width="60" Height="26"/>
-        <Button x:Name="Clientecmd" Content="Cliente" HorizontalAlignment="Left" Height="26" Margin="266,41,0,0" VerticalAlignment="Top" Width="60"/>
-        <Button x:Name="Sucursalcmd" Content="Sucursal" HorizontalAlignment="Left" Margin="349,41,0,0" VerticalAlignment="Top" Width="60" Height="26"/>
-        <Button x:Name="Proveedorcmd" Content="Proveedor" HorizontalAlignment="Left" Height="26" Margin="432,41,0,0" VerticalAlignment="Top" Width="60"/>
-        <Button x:Name="Trabajadorcmd" Content="Trabajador" HorizontalAlignment="Left" Margin="515,41,0,0" VerticalAlignment="Top" Width="60" Height="26" Click="btnTrabajador_Click"/>
-        <Button x:Name="Transaccioncmd" Content="Transaccion" HorizontalAlignment="Left" Height="26" Margin="598,41,0,0" VerticalAlignment="Top" Width="69"/>
-        <Label x:Name="Campo2" Content="" HorizontalAlignment="Left" Margin="33,74,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo3" Content="" HorizontalAlignment="Left" Margin="33,100,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo4" Content="" HorizontalAlignment="Left" Margin="33,126,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo5" Content="" HorizontalAlignment="Left" Margin="33,152,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo6" Content="" HorizontalAlignment="Left" Margin="33,178,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo7" Content="" HorizontalAlignment="Left" Margin="33,204,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <DataGrid x:Name="dgTabla" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="362,23,17,151" Grid.Row="1" SelectionChanged="dgTabla_SelectionChanged"/>
-        <Button x:Name="btnInsertar" Click="btnInsertar_Click" Content="Insertar" HorizontalAlignment="Left" Margin="122,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
-        <Button x:Name="btnEditar" Click="btnEditar_Click" Content="Editar" HorizontalAlignment="Left" Margin="273,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
-        <Button x:Name="btnEliminar" Click="btnEliminar_Click" Content="Eliminar" HorizontalAlignment="Left" Margin="432,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
-        <TextBox x:Name="txtNombre" HorizontalAlignment="Left" Margin="213,52,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtApellido" HorizontalAlignment="Left" Margin="213,78,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtPuesto" HorizontalAlignment="Left" Margin="213,104,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtHoraInicio" HorizontalAlignment="Left" Margin="213,130,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtHoraFin" HorizontalAlignment="Left" Margin="213,156,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtDia" HorizontalAlignment="Left" Margin="213,182,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="lblNombre" Content="Nombre" HorizontalAlignment="Left" Margin="112,48,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93" Height="26"/>
-        <Label x:Name="lblApellido" Content="Apellido" HorizontalAlignment="Left" Margin="113,74,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
-        <Label x:Name="lblPuesto" Content="Puesto" HorizontalAlignment="Left" Margin="113,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
-        <Label x:Name="lblHoraInicio" Content="Turno Inicio" HorizontalAlignment="Left" Margin="113,126,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
-        <Label x:Name="lblHoraFin" Content="Turno Fin" HorizontalAlignment="Left" Margin="113,151,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
-        <Label x:Name="lblDia" Content="Turno Dia" HorizontalAlignment="Left" Margin="113,178,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
-        <Label x:Name="lblID" Content="ID" HorizontalAlignment="Left" Margin="112,23,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93" Height="26"/>
-        <TextBox x:Name="txtID" IsReadOnly="True" HorizontalAlignment="Left" Margin="213,27,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btnLimpiar" Click="BtnLimpiar_Click" Content="Limpiar" HorizontalAlignment="Left" Margin="598,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
+        Title="MainWindow" Height="600" Width="1000" MinHeight="500" MinWidth="800" >
 
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="PAQUETERIA"
+               Grid.Row="0"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Top"
+               FontSize="24"
+               Margin="0,0,0,10"/>
+
+        <TabControl x:Name="tabContenedor" SelectionChanged="tabContenedor_SelectionChanged" Grid.Row="1">
+
+            <!-- =============== PESTAÑA TRABAJADORES =============== -->
+            <TabItem Header="Trabajadores" >
+                <Grid Margin="10">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- =============== CAMPOS =============== -->
+                    <ScrollViewer Grid.Row="0" Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0,0,10,0">
+
+                            <Label Content="ID"/>
+                            <TextBox x:Name="txtID" IsReadOnly="True"/>
+
+                            <Label Content="Nombre"/>
+                            <TextBox x:Name="txtNombre"/>
+
+                            <Label Content="Apellido"/>
+                            <TextBox x:Name="txtApellido"/>
+
+                            <Label Content="Puesto"/>
+                            <TextBox x:Name="txtPuesto"/>
+
+                            <Label Content="Hora Inicio (HH:mm)"/>
+                            <TextBox x:Name="txtHoraInicio"/>
+
+                            <Label Content="Hora Fin (HH:mm)"/>
+                            <TextBox x:Name="txtHoraFin"/>
+
+                            <Label Content="Día"/>
+                            <TextBox x:Name="txtDia"/>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- =============== TABLA =============== -->
+                    <DataGrid x:Name="dgTabla"
+                  Grid.Row="0"
+                  Grid.Column="1"
+                  Margin="10,0,0,0"
+                  AutoGenerateColumns="True"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  SelectionChanged="dgTabla_SelectionChanged"/>
+
+                    <!-- =============== BOTONES =============== -->
+                    <StackPanel Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,10,0,0">
+
+                        <Button x:Name="btnInsertar" Content="Insertar" Width="120" Height="36" Margin="10" Click="btnInsertar_Click"/>
+                        <Button x:Name="btnEditar"   Content="Editar"   Width="120" Height="36" Margin="10" Click="btnEditar_Click"/>
+                        <Button x:Name="btnEliminar" Content="Eliminar" Width="120" Height="36" Margin="10" Click="btnEliminar_Click"/>
+                        <Button x:Name="btnLimpiar"  Content="Limpiar"  Width="120" Height="36" Margin="10" Click="btnLimpiar_Click"/>
+
+                    </StackPanel>
+
+                </Grid>
+            </TabItem>
+
+            <!-- Otras pestañas -->
+            <TabItem Header="Servicios">
+                <Grid Margin="10">
+                    <TextBlock Text="Servicios"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Paquetes">
+                <Grid Margin="10">
+                    <TextBlock Text="Paquetes"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Clientes">
+                <Grid Margin="10">
+                    <TextBlock Text="Clientes"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Sucursales">
+                <Grid Margin="10">
+                    <TextBlock Text="Sucursales"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Proveedores">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="13*"/>
+                        <ColumnDefinition Width="941*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Proveedores" Grid.ColumnSpan="2"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Transacciones">
+                <Grid Margin="10">
+                    <TextBlock Text="Transacciones"/>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
     </Grid>
 </Window>
