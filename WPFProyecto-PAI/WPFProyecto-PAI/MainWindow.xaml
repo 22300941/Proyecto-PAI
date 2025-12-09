@@ -26,9 +26,9 @@
         <Label x:Name="Campo6" Content="" HorizontalAlignment="Left" Margin="33,178,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
         <Label x:Name="Campo7" Content="" HorizontalAlignment="Left" Margin="33,204,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
         <DataGrid x:Name="dgTabla" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="362,23,17,151" Grid.Row="1" SelectionChanged="dgTabla_SelectionChanged"/>
-        <Button x:Name="btnInsertar" Click="btnInsertar_Click" Content="Insertar" HorizontalAlignment="Left" Margin="175,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
-        <Button x:Name="btnEditar" Click="btnEditar_Click" Content="Editar" HorizontalAlignment="Left" Margin="325,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
-        <Button x:Name="btnEliminar" Click="btnEliminar_Click" Content="Eliminar" HorizontalAlignment="Left" Margin="475,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
+        <Button x:Name="btnInsertar" Click="btnInsertar_Click" Content="Insertar" HorizontalAlignment="Left" Margin="122,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
+        <Button x:Name="btnEditar" Click="btnEditar_Click" Content="Editar" HorizontalAlignment="Left" Margin="273,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
+        <Button x:Name="btnEliminar" Click="btnEliminar_Click" Content="Eliminar" HorizontalAlignment="Left" Margin="432,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
         <TextBox x:Name="txtNombre" HorizontalAlignment="Left" Margin="213,52,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="txtApellido" HorizontalAlignment="Left" Margin="213,78,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="txtPuesto" HorizontalAlignment="Left" Margin="213,104,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
@@ -43,6 +43,7 @@
         <Label x:Name="lblDia" Content="Turno Dia" HorizontalAlignment="Left" Margin="113,178,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
         <Label x:Name="lblID" Content="ID" HorizontalAlignment="Left" Margin="112,23,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93" Height="26"/>
         <TextBox x:Name="txtID" IsReadOnly="True" HorizontalAlignment="Left" Margin="213,27,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btnLimpiar" Click="BtnLimpiar_Click" Content="Limpiar" HorizontalAlignment="Left" Margin="598,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
 
     </Grid>
 </Window>

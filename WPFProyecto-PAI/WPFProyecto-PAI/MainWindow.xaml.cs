@@ -28,10 +28,12 @@ namespace WPFProyecto_PAI
         {
             InitializeComponent();
 
+            // Inicializar helpers y cadena de conexión
             cadenaConexion = @"Server=DESKTOP-LEHP21J;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
             turnoBD = new turnoHelper(cadenaConexion);
 
+            // Inicialmente ocultar todos los campos
             OcultarTodosLosCampos();
         }
 
@@ -93,6 +95,7 @@ namespace WPFProyecto_PAI
             btnEliminar.Visibility = Visibility.Visible;
         }
 
+        // ------------------ CARGAR TRABAJADORES ------------------
         private void CargarTrabajadores()
         {
             try
@@ -116,6 +119,7 @@ namespace WPFProyecto_PAI
             }
         }
 
+        // ------------------ SECCION TRABAJADOR ------------------
         private void btnTrabajador_Click(object sender, RoutedEventArgs e)
         {
             modoActual = ModoVista.Trabajadores;
@@ -123,9 +127,10 @@ namespace WPFProyecto_PAI
             CargarTrabajadores();
         }
 
-        // ------------------ SELECCIÓN DEL GRID ------------------
+        // ------------------ SELECCION EN TABLA ------------------
         private void dgTabla_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Cargar datos del trabajador seleccionado
             if (modoActual != ModoVista.Trabajadores) return;
 
             if (dgTabla.SelectedItem is DataRowView row)
@@ -143,15 +148,11 @@ namespace WPFProyecto_PAI
                         }
                     }
 
-                    // Asignar valores seguros
                     txtID.Text = row["id_personal"]?.ToString() ?? "";
                     txtNombre.Text = row["nombre"]?.ToString() ?? "";
                     txtApellido.Text = row["apellido"]?.ToString() ?? "";
                     txtPuesto.Text = row["puesto"]?.ToString() ?? "";
 
-                    // ==========================
-                    // Obtener el id_turno
-                    // ==========================
                     if (row["turno"] == DBNull.Value)
                     {
                         txtHoraInicio.Text = "";
@@ -162,7 +163,6 @@ namespace WPFProyecto_PAI
 
                     int idTurno = Convert.ToInt32(row["turno"]);
 
-                    // Obtener turno desde BD
                     var turnos = turnoBD.ObtenerTurnos();
                     var t = turnos.FirstOrDefault(x => x.id_turno == idTurno);
 
@@ -189,6 +189,7 @@ namespace WPFProyecto_PAI
         // ------------------ INSERTAR ------------------
         private void btnInsertar_Click(object sender, RoutedEventArgs e)
         {
+            // Insertar trabajador
             if (modoActual != ModoVista.Trabajadores) return;
 
             try
@@ -234,6 +235,7 @@ namespace WPFProyecto_PAI
         // ------------------ EDITAR ------------------
         private void btnEditar_Click(object sender, RoutedEventArgs e)
         {
+            // Editar trabajador
             if (modoActual != ModoVista.Trabajadores) return;
 
             if (string.IsNullOrWhiteSpace(txtID.Text))
@@ -274,6 +276,7 @@ namespace WPFProyecto_PAI
         // ------------------ ELIMINAR ------------------
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
+            // Eliminar trabajador
             if (modoActual != ModoVista.Trabajadores) return;
 
             if (string.IsNullOrWhiteSpace(txtID.Text))
@@ -300,5 +303,18 @@ namespace WPFProyecto_PAI
                 MessageBox.Show("Error al eliminar: " + ex.Message);
             }
         }
+
+        private void BtnLimpiar_Click(object sender, RoutedEventArgs e)
+        {
+            txtID.Text = "";
+            txtNombre.Text = "";
+            txtApellido.Text = "";
+            txtPuesto.Text = "";
+            txtHoraInicio.Text = "";
+            txtHoraFin.Text = "";
+            txtDia.Text = "";
+            txtID.Focus();
+        }
+
     }
 }

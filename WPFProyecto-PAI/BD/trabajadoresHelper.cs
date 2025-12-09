@@ -13,9 +13,6 @@ namespace BD
             connectionString = conn;
         }
 
-        // ------------------------------------------------------
-        // INSERTAR TRABAJADOR + TURNO
-        // ------------------------------------------------------
         public void AgregarTrabajadorConTurno(
             string nombre,
             string apellido,
@@ -28,7 +25,6 @@ namespace BD
             {
                 conn.Open();
 
-                // 1. Insertar turno y obtener ID
                 string queryTurno =
                     @"INSERT INTO turno (hora_inicio, hora_fin, dia)
                       OUTPUT INSERTED.id_turno
@@ -45,7 +41,6 @@ namespace BD
                     idTurno = (int)cmd.ExecuteScalar();
                 }
 
-                // 2. Insertar trabajador con la FK del turno
                 string queryTrab =
                     @"INSERT INTO trabajadores (nombre, apellido, puesto, turno) 
                       VALUES (@nombre, @apellido, @puesto, @turno)";
@@ -62,9 +57,6 @@ namespace BD
             }
         }
 
-        // ------------------------------------------------------
-        // ACTUALIZAR TRABAJADOR + TURNO
-        // ------------------------------------------------------
         public void ActualizarTrabajadorConTurno(
             int idTrabajador,
             string nombre,
@@ -78,7 +70,6 @@ namespace BD
             {
                 conn.Open();
 
-                // Obtener turno asociado
                 int idTurno;
                 string queryGetTurno = "SELECT turno FROM trabajadores WHERE id_personal = @id";
 
@@ -88,7 +79,6 @@ namespace BD
                     idTurno = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                // 1. Actualizar turno
                 string queryTurno =
                     @"UPDATE turno
                       SET hora_inicio = @inicio, hora_fin = @fin, dia = @dia
@@ -104,7 +94,6 @@ namespace BD
                     cmd.ExecuteNonQuery();
                 }
 
-                // 2. Actualizar trabajador
                 string queryTrab =
                     @"UPDATE trabajadores
                       SET nombre = @nombre,
@@ -124,9 +113,6 @@ namespace BD
             }
         }
 
-        // ------------------------------------------------------
-        // ELIMINAR TRABAJADOR + TURNO
-        // ------------------------------------------------------
         public void EliminarTrabajadorConTurno(int idTrabajador)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -135,7 +121,6 @@ namespace BD
 
                 int? idTurno = null;
 
-                // Obtener turno (puede ser nulo)
                 string queryGetTurno = "SELECT turno FROM trabajadores WHERE id_personal = @id";
                 using (SqlCommand cmd = new SqlCommand(queryGetTurno, conn))
                 {
@@ -146,7 +131,6 @@ namespace BD
                         idTurno = Convert.ToInt32(result);
                 }
 
-                // Eliminar trabajador
                 string queryTrab = "DELETE FROM trabajadores WHERE id_personal = @id";
                 using (SqlCommand cmd = new SqlCommand(queryTrab, conn))
                 {
@@ -154,7 +138,6 @@ namespace BD
                     cmd.ExecuteNonQuery();
                 }
 
-                // Eliminar turno solo si existe
                 if (idTurno.HasValue)
                 {
                     string queryTurno = "DELETE FROM turno WHERE id_turno = @id";
