@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using WPFProyecto_PAI.Tablas;
 using BD;
 
@@ -18,47 +20,54 @@ namespace WPFProyecto_PAI
         private trabajadoresHelper trabajadorBD;
         private turnoHelper turnoBD;
 
+        // ID seleccionado desde el DataGrid
+        private int trabajadorSeleccionadoId = 0;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            string cadenaConexion = "Falta la conexion";
+            string cadenaConexion = "Server=.;Database=Paqueteria;Trusted_Connection=True;";
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
             turnoBD = new turnoHelper(cadenaConexion);
 
             OcultarTodosLosCampos();
         }
 
-        // ---------------------------------------------------
-        // OCULTAR TODO
-        // ---------------------------------------------------
         private void OcultarTodosLosCampos()
         {
-            txtNombre.Visibility = Visibility.Collapsed;
-            txtApellido.Visibility = Visibility.Collapsed;
-            txtPuesto.Visibility = Visibility.Collapsed;
-            txtHoraInicio.Visibility = Visibility.Collapsed;
-            txtHoraFin.Visibility = Visibility.Collapsed;
-            txtDia.Visibility = Visibility.Collapsed;
+            lblID.Visibility = Visibility.Collapsed;
+            txtID.Visibility = Visibility.Collapsed;
 
             lblNombre.Visibility = Visibility.Collapsed;
+            txtNombre.Visibility = Visibility.Collapsed;
+
             lblApellido.Visibility = Visibility.Collapsed;
+            txtApellido.Visibility = Visibility.Collapsed;
+
             lblPuesto.Visibility = Visibility.Collapsed;
+            txtPuesto.Visibility = Visibility.Collapsed;
+
             lblHoraInicio.Visibility = Visibility.Collapsed;
+            txtHoraInicio.Visibility = Visibility.Collapsed;
+
             lblHoraFin.Visibility = Visibility.Collapsed;
+            txtHoraFin.Visibility = Visibility.Collapsed;
+
             lblDia.Visibility = Visibility.Collapsed;
+            txtDia.Visibility = Visibility.Collapsed;
 
             btnInsertar.Visibility = Visibility.Collapsed;
             btnEditar.Visibility = Visibility.Collapsed;
             btnEliminar.Visibility = Visibility.Collapsed;
         }
 
-        // ---------------------------------------------------
-        // MOSTRAR CAMPOS TRABAJADOR + TURNO
-        // ---------------------------------------------------
         private void MostrarCamposTrabajador()
         {
             OcultarTodosLosCampos();
+
+            lblID.Visibility = Visibility.Visible;
+            txtID.Visibility = Visibility.Visible;
 
             lblNombre.Visibility = Visibility.Visible;
             txtNombre.Visibility = Visibility.Visible;
@@ -83,133 +92,161 @@ namespace WPFProyecto_PAI
             btnEliminar.Visibility = Visibility.Visible;
         }
 
-        // ---------------------------------------------------
-        // CARGAR GRID
-        // ---------------------------------------------------
         private void CargarVistaTrabajadores()
         {
             dgTabla.ItemsSource = trabajadorBD.ObtenerTrabajadores();
+            trabajadorSeleccionadoId = 0;
+
+            txtID.Text = "";
+            txtNombre.Text = "";
+            txtApellido.Text = "";
+            txtPuesto.Text = "";
+            txtHoraInicio.Text = "";
+            txtHoraFin.Text = "";
+            txtDia.Text = "";
+
+            dgTabla.UnselectAll();
         }
 
-        // ---------------------------------------------------
-        // BOTÓN TRABAJADORES
-        // ---------------------------------------------------
         private void btnTrabajador_Click(object sender, RoutedEventArgs e)
         {
             modoActual = ModoVista.Trabajadores;
-
             MostrarCamposTrabajador();
             CargarVistaTrabajadores();
         }
 
-        // ---------------------------------------------------
-        // INSERTAR
-        // ---------------------------------------------------
+        // ------------------ SELECCIÓN DEL GRID ------------------
+        private void dgTabla_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (modoActual != ModoVista.Trabajadores) return;
+
+            if (dgTabla.SelectedItem is trabajadores t)
+            {
+                trabajadorSeleccionadoId = t.id_personal;
+
+                // Mostrar ID
+                txtID.Text = trabajadorSeleccionadoId.ToString();
+
+                txtNombre.Text = t.nombre;
+                txtApellido.Text = t.apellido;
+                txtPuesto.Text = t.puesto;
+
+                // Buscar turno
+                try
+                {
+                    var turnos = turnoBD.ObtenerTurnos();
+                    var turno = turnos.FirstOrDefault(x => x.id_turno == t.turno);
+
+                    if (turno != null)
+                    {
+                        txtHoraInicio.Text = turno.hora_inicio.ToString();
+                        txtHoraFin.Text = turno.hora_fin.ToString();
+                        txtDia.Text = turno.dia;
+                    }
+                    else
+                    {
+                        txtHoraInicio.Text = "";
+                        txtHoraFin.Text = "";
+                        txtDia.Text = "";
+                    }
+                }
+                catch { }
+            }
+            else
+            {
+                trabajadorSeleccionadoId = 0;
+                txtID.Text = "";
+            }
+        }
+
+        // ------------------ INSERTAR ------------------
         private void btnInsertar_Click(object sender, RoutedEventArgs e)
         {
-            if (modoActual == ModoVista.Trabajadores)
+            if (modoActual != ModoVista.Trabajadores) return;
+
+            try
             {
-                try
-                {
-                    string nombre = txtNombre.Text;
-                    string apellido = txtApellido.Text;
-                    string puesto = txtPuesto.Text;
+                trabajadorBD.AgregarTrabajadorConTurno(
+                    txtNombre.Text,
+                    txtApellido.Text,
+                    txtPuesto.Text,
+                    TimeOnly.Parse(txtHoraInicio.Text),
+                    TimeOnly.Parse(txtHoraFin.Text),
+                    txtDia.Text
+                );
 
-                    TimeOnly inicio = TimeOnly.Parse(txtHoraInicio.Text);
-                    TimeOnly fin = TimeOnly.Parse(txtHoraFin.Text);
-                    string dia = txtDia.Text;
+                MessageBox.Show("Trabajador insertado correctamente.");
 
-                    // SE USA EL MÉTODO REAL DEL HELPER
-                    trabajadorBD.AgregarTrabajadorConTurno(
-                        nombre,
-                        apellido,
-                        puesto,
-                        inicio,
-                        fin,
-                        dia
-                    );
-
-                    MessageBox.Show("Trabajador agregado correctamente.");
-                    CargarVistaTrabajadores();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al insertar: " + ex.Message);
-                }
+                CargarVistaTrabajadores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al insertar: " + ex.Message);
             }
         }
 
-        // ---------------------------------------------------
-        // EDITAR
-        // ---------------------------------------------------
+        // ------------------ EDITAR ------------------
         private void btnEditar_Click(object sender, RoutedEventArgs e)
         {
-            if (modoActual == ModoVista.Trabajadores)
+            if (modoActual != ModoVista.Trabajadores) return;
+
+            if (string.IsNullOrWhiteSpace(txtID.Text))
             {
-                try
-                {
-                    if (dgTabla.SelectedItem is trabajadores t)
-                    {
-                        string nombre = txtNombre.Text;
-                        string apellido = txtApellido.Text;
-                        string puesto = txtPuesto.Text;
+                MessageBox.Show("Selecciona un trabajador primero.");
+                return;
+            }
 
-                        TimeOnly inicio = TimeOnly.Parse(txtHoraInicio.Text);
-                        TimeOnly fin = TimeOnly.Parse(txtHoraFin.Text);
-                        string dia = txtDia.Text;
+            trabajadorSeleccionadoId = int.Parse(txtID.Text);
 
-                        // SE USA EL MÉTODO REAL DEL HELPER
-                        trabajadorBD.ActualizarTrabajadorConTurno(
-                            t.id_personal,
-                            nombre,
-                            apellido,
-                            puesto,
-                            inicio,
-                            fin,
-                            dia
-                        );
+            try
+            {
+                trabajadorBD.ActualizarTrabajadorConTurno(
+                    trabajadorSeleccionadoId,
+                    txtNombre.Text,
+                    txtApellido.Text,
+                    txtPuesto.Text,
+                    TimeOnly.Parse(txtHoraInicio.Text),
+                    TimeOnly.Parse(txtHoraFin.Text),
+                    txtDia.Text
+                );
 
-                        MessageBox.Show("Trabajador actualizado.");
-                        CargarVistaTrabajadores();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Selecciona un trabajador.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al editar: " + ex.Message);
-                }
+                MessageBox.Show("Trabajador actualizado.");
+
+                CargarVistaTrabajadores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al editar: " + ex.Message);
             }
         }
 
-        // ---------------------------------------------------
-        // ELIMINAR
-        // ---------------------------------------------------
+        // ------------------ ELIMINAR ------------------
         private void btnEliminar_Click(object sender, RoutedEventArgs e)
         {
-            if (modoActual == ModoVista.Trabajadores)
-            {
-                try
-                {
-                    if (dgTabla.SelectedItem is trabajadores t)
-                    {
-                        // SE USA EL MÉTODO REAL DEL HELPER
-                        trabajadorBD.EliminarTrabajadorConTurno(t.id_personal);
+            if (modoActual != ModoVista.Trabajadores) return;
 
-                        MessageBox.Show("Trabajador eliminado.");
-                        CargarVistaTrabajadores();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Selecciona un trabajador.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al eliminar: " + ex.Message);
-                }
+            if (string.IsNullOrWhiteSpace(txtID.Text))
+            {
+                MessageBox.Show("Selecciona un trabajador primero.");
+                return;
+            }
+
+            trabajadorSeleccionadoId = int.Parse(txtID.Text);
+
+            var confirmar = MessageBox.Show("¿Eliminar este trabajador?", "Confirmación", MessageBoxButton.YesNo);
+            if (confirmar != MessageBoxResult.Yes) return;
+
+            try
+            {
+                trabajadorBD.EliminarTrabajadorConTurno(trabajadorSeleccionadoId);
+
+                MessageBox.Show("Trabajador eliminado.");
+
+                CargarVistaTrabajadores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar: " + ex.Message);
             }
         }
     }

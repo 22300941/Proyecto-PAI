@@ -17,7 +17,7 @@
         <Button x:Name="Clientecmd" Content="Cliente" HorizontalAlignment="Left" Height="26" Margin="266,41,0,0" VerticalAlignment="Top" Width="60"/>
         <Button x:Name="Sucursalcmd" Content="Sucursal" HorizontalAlignment="Left" Margin="349,41,0,0" VerticalAlignment="Top" Width="60" Height="26"/>
         <Button x:Name="Proveedorcmd" Content="Proveedor" HorizontalAlignment="Left" Height="26" Margin="432,41,0,0" VerticalAlignment="Top" Width="60"/>
-        <Button x:Name="Trabajadorcmd" Content="Trabajador" HorizontalAlignment="Left" Margin="515,41,0,0" VerticalAlignment="Top" Width="60" Height="26"/>
+        <Button x:Name="Trabajadorcmd" Content="Trabajador" HorizontalAlignment="Left" Margin="515,41,0,0" VerticalAlignment="Top" Width="60" Height="26" Click="btnTrabajador_Click"/>
         <Button x:Name="Transaccioncmd" Content="Transaccion" HorizontalAlignment="Left" Height="26" Margin="598,41,0,0" VerticalAlignment="Top" Width="69"/>
         <Label x:Name="Campo2" Content="" HorizontalAlignment="Left" Margin="33,74,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
         <Label x:Name="Campo3" Content="" HorizontalAlignment="Left" Margin="33,100,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
