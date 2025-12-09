@@ -19,26 +19,30 @@
         <Button x:Name="Proveedorcmd" Content="Proveedor" HorizontalAlignment="Left" Height="26" Margin="432,41,0,0" VerticalAlignment="Top" Width="60"/>
         <Button x:Name="Trabajadorcmd" Content="Trabajador" HorizontalAlignment="Left" Margin="515,41,0,0" VerticalAlignment="Top" Width="60" Height="26"/>
         <Button x:Name="Transaccioncmd" Content="Transaccion" HorizontalAlignment="Left" Height="26" Margin="598,41,0,0" VerticalAlignment="Top" Width="69"/>
-        <Label x:Name="InfoID" Content="" HorizontalAlignment="Left" Margin="50,75,0,0" VerticalAlignment="Top" Width="79" Grid.RowSpan="2"/>
-        <Label x:Name="IDText" Content="" HorizontalAlignment="Left" Margin="250,75,0,0" VerticalAlignment="Top" Width="79" Grid.RowSpan="2"/>
-        <Label x:Name="Campo1" Content="" HorizontalAlignment="Left" Margin="50,23,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo2" Content="" HorizontalAlignment="Left" Margin="50,49,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo3" Content="" HorizontalAlignment="Left" Margin="50,75,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo4" Content="" HorizontalAlignment="Left" Margin="50,101,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo5" Content="" HorizontalAlignment="Left" Margin="50,127,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo6" Content="" HorizontalAlignment="Left" Margin="50,153,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <Label x:Name="Campo7" Content="" HorizontalAlignment="Left" Margin="50,179,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
-        <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" Margin="362,23,17,151" Grid.Row="1"/>
-        <Button x:Name="Insertarcmd" Content="Insertar" HorizontalAlignment="Left" Margin="175,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
-        <Button x:Name="Editarcmd" Content="Editar" HorizontalAlignment="Left" Margin="325,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
-        <Button x:Name="Eliminarcmd" Content="Eliminar" HorizontalAlignment="Left" Margin="475,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
-        <TextBox x:Name="Texto1" HorizontalAlignment="Left" Margin="230,27,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="Texto2" HorizontalAlignment="Left" Margin="230,53,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="Texto3" HorizontalAlignment="Left" Margin="230,79,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="Texto4" HorizontalAlignment="Left" Margin="230,105,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="Texto5" HorizontalAlignment="Left" Margin="230,131,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="Texto6" HorizontalAlignment="Left" Margin="230,157,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="Texto7" HorizontalAlignment="Left" Margin="230,183,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="Campo2" Content="" HorizontalAlignment="Left" Margin="33,74,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
+        <Label x:Name="Campo3" Content="" HorizontalAlignment="Left" Margin="33,100,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
+        <Label x:Name="Campo4" Content="" HorizontalAlignment="Left" Margin="33,126,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
+        <Label x:Name="Campo5" Content="" HorizontalAlignment="Left" Margin="33,152,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
+        <Label x:Name="Campo6" Content="" HorizontalAlignment="Left" Margin="33,178,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
+        <Label x:Name="Campo7" Content="" HorizontalAlignment="Left" Margin="33,204,0,0" VerticalAlignment="Top" Width="79" Grid.Row="1"/>
+        <DataGrid x:Name="dgTabla" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="362,23,17,151" Grid.Row="1"/>
+        <Button x:Name="btnInsertar" Content="Insertar" HorizontalAlignment="Left" Margin="175,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
+        <Button x:Name="btnEditar" Content="Editar" HorizontalAlignment="Left" Margin="325,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
+        <Button x:Name="btnEliminar" Content="Eliminar" HorizontalAlignment="Left" Margin="475,245,0,0" Grid.Row="1" VerticalAlignment="Top" Height="48" Width="74"/>
+        <TextBox x:Name="txtNombre" HorizontalAlignment="Left" Margin="213,52,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtApellido" HorizontalAlignment="Left" Margin="213,78,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtPuesto" HorizontalAlignment="Left" Margin="213,104,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtHoraInicio" HorizontalAlignment="Left" Margin="213,130,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtHoraFin" HorizontalAlignment="Left" Margin="213,156,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtDia" HorizontalAlignment="Left" Margin="213,182,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="lblNombre" Content="Nombre" HorizontalAlignment="Left" Margin="112,48,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93" Height="26"/>
+        <Label x:Name="lblApellido" Content="Apellido" HorizontalAlignment="Left" Margin="113,74,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
+        <Label x:Name="lblPuesto" Content="Puesto" HorizontalAlignment="Left" Margin="113,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
+        <Label x:Name="lblHoraInicio" Content="Turno Inicio" HorizontalAlignment="Left" Margin="113,126,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
+        <Label x:Name="lblHoraFin" Content="Turno Fin" HorizontalAlignment="Left" Margin="113,151,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
+        <Label x:Name="lblDia" Content="Turno Dia" HorizontalAlignment="Left" Margin="113,178,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93"/>
+        <Label x:Name="lblID" Content="ID" HorizontalAlignment="Left" Margin="112,23,0,0" Grid.Row="1" VerticalAlignment="Top" Width="93" Height="26"/>
+        <TextBox x:Name="txtID" HorizontalAlignment="Left" Margin="213,27,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>

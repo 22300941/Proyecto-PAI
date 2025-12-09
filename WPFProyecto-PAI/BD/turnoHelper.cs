@@ -3,7 +3,7 @@ using WPFProyecto_PAI.Tablas;
 
 namespace BD
 {
-    internal class turnoHelper
+    public class turnoHelper
     {
         private string _conexion;
 

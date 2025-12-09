@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WPFProyecto_PAI.Tablas
 {
-    class turno
+    public class turno
     {
         public int id_turno { get; set; }
         public TimeOnly hora_inicio { get; set; }
