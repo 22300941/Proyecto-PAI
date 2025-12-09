@@ -11,6 +11,6 @@ namespace WPFProyecto_PAI.Tablas
         public int id_turno { get; set; }
         public TimeOnly hora_inicio { get; set; }
         public TimeOnly hora_fin { get; set; }
-        public DateOnly dia { get; set; }
+        public string dia { get; set; }
     }
 }
