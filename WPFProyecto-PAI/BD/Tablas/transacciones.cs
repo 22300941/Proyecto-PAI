@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BD.Tablas
+namespace WPFProyecto_PAI.Tablas
 {
     public class transacciones
     {

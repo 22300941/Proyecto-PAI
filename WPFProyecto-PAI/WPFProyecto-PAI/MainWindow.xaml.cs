@@ -15,6 +15,10 @@ namespace WPFProyecto_PAI
         private turnoHelper turnoBD;
         private sucursalesHelper sucursalBD;
         private servicioHelper servicioBD;
+        private transaccionesHelper transaccionesBD;
+        private paqueteHelper paqueteBD;
+
+
 
 
 
@@ -25,7 +29,7 @@ namespace WPFProyecto_PAI
             InitializeComponent();
 
             // Cadena de conexion a la base de datos
-            cadenaConexion = @"Server=LAPTOP_ITZEL;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
+            cadenaConexion = @"Server=FABIANCETI;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
 
             // Inicializar helpers
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
@@ -33,6 +37,12 @@ namespace WPFProyecto_PAI
 
             sucursalBD = new sucursalesHelper(cadenaConexion);
             servicioBD = new servicioHelper(cadenaConexion);
+
+            transaccionesBD = new transaccionesHelper(cadenaConexion);
+            paqueteBD = new paqueteHelper(cadenaConexion);
+
+
+
 
 
 
@@ -86,6 +96,12 @@ namespace WPFProyecto_PAI
                 {
                     CargarServicios();
                 }
+
+                if (tab.Header.ToString() == "Transacciones")
+                {
+                    CargarTransacciones();
+                }
+
 
             }
         }
@@ -485,8 +501,281 @@ namespace WPFProyecto_PAI
             cbPaquetes_servicio.SelectedIndex = -1;
         }
 
+       
 
         // ------------------------------- FIN SERVICIO -------------------------------
+
+
+
+        // ------------------------------- TRANSACCIONES -------------------------------
+
+        private void CargarTransacciones()
+        {
+            try
+            {
+                dgTabla_transacciones.ItemsSource =
+                    transaccionesBD.ObtenerTransacciones().DefaultView;
+
+                // Cargar paquetes para el ComboBox
+                var paquetes = servicioBD.ObtenerPaquetes();
+                cbPaquetes_transacciones.ItemsSource = paquetes.DefaultView;
+                cbPaquetes_transacciones.DisplayMemberPath = "id_paquete";
+                cbPaquetes_transacciones.SelectedValuePath = "id_paquete";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar transacciones: " + ex.Message);
+            }
+        }
+
+        private void dgTabla_transacciones_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgTabla_transacciones.SelectedItem is DataRowView row)
+            {
+                txtID_transacciones.Text = row["id_transaccion"]?.ToString() ?? "";
+                txtTotal_transacciones.Text = row["total"]?.ToString() ?? "";
+                txtMetodo_transacciones.Text = row["metodo_pago"]?.ToString() ?? "";
+                cbPaquetes_transacciones.SelectedValue = row["id_paquete"];
+
+                // Convertir SQL DateTime → DatePicker
+                if (DateTime.TryParse(row["fecha_pago"]?.ToString(), out DateTime fechaSQL))
+                {
+                    dpFechaPago.SelectedDate = fechaSQL;
+                }
+                else
+                {
+                    dpFechaPago.SelectedDate = null;
+                }
+            }
+
+        }
+
+        private void btnInsertar_transacciones_Click(object sender, RoutedEventArgs e)
+        {
+            if (dpFechaPago.SelectedDate == null)
+            {
+                MessageBox.Show("Selecciona una fecha.");
+                return;
+            }
+
+            DateOnly fecha = DateOnly.FromDateTime(dpFechaPago.SelectedDate.Value);
+
+            if (!int.TryParse(txtTotal_transacciones.Text, out int total))
+            {
+                MessageBox.Show("Total inválido.");
+                return;
+            }
+
+            if (cbPaquetes_transacciones.SelectedValue == null)
+            {
+                MessageBox.Show("Selecciona un paquete.");
+                return;
+            }
+
+            transaccionesBD.InsertarTransaccion(
+                fecha,
+                total,
+                txtMetodo_transacciones.Text,
+                (int)cbPaquetes_transacciones.SelectedValue
+            );
+
+            MessageBox.Show("Transacción insertada.");
+            CargarTransacciones();
+        }
+
+
+        private void btnEditar_transacciones_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_transacciones.Text, out int id))
+            {
+                MessageBox.Show("Selecciona una transacción.");
+                return;
+            }
+
+            if (dpFechaPago.SelectedDate == null)
+            {
+                MessageBox.Show("Selecciona una fecha.");
+                return;
+            }
+
+            DateOnly fecha = DateOnly.FromDateTime(dpFechaPago.SelectedDate.Value);
+
+            if (!int.TryParse(txtTotal_transacciones.Text, out int total))
+            {
+                MessageBox.Show("Total inválido.");
+                return;
+            }
+
+            transaccionesBD.EditarTransaccion(
+                id,
+                fecha,
+                total,
+                txtMetodo_transacciones.Text,
+                (int)cbPaquetes_transacciones.SelectedValue
+            );
+
+            MessageBox.Show("Transacción actualizada.");
+            CargarTransacciones();
+        }
+
+        private void btnEliminar_transacciones_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_transacciones.Text, out int id))
+            {
+                MessageBox.Show("Selecciona una transacción.");
+                return;
+            }
+
+            transaccionesBD.EliminarTransaccion(id);
+
+            MessageBox.Show("Transacción eliminada.");
+            CargarTransacciones();
+        }
+
+        private void btnLimpiar_transacciones_Click(object sender, RoutedEventArgs e)
+        {
+            txtID_transacciones.Text = "";
+            dpFechaPago.SelectedDate = null;
+            txtTotal_transacciones.Text = "";
+            txtMetodo_transacciones.Text = "";
+            cbPaquetes_transacciones.SelectedIndex = -1;
+
+            dgTabla_transacciones.UnselectAll();
+        }
+
+
+
+
+
+        // ------------------------------- FIN TRANSACCIONES -------------------------------
+
+
+
+        // ------------------------------- PAQUETES -------------------------------
+
+        private void CargarPaquetes()
+        {
+            try
+            {
+                dgTabla_paquetes.ItemsSource = paqueteBD.ObtenerPaquetes().DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar paquetes: " + ex.Message);
+            }
+        }
+
+        private void dgTabla_paquetes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgTabla_paquetes.SelectedItem is DataRowView row)
+            {
+                txtID_paquete.Text = row["id_paquete"]?.ToString() ?? "";
+                txtTipo_paquetes.Text = row["tipo_paquete"]?.ToString() ?? "";
+                txtCodigoBarras_paquetes.Text = row["codigo_barras"]?.ToString() ?? "";
+
+                cbSucursal_paquetes.SelectedValue = row["id_sucursal"];
+                cbCliente_paquetes.SelectedValue = row["id_cliente"];
+                cbProveedor_paquetes.SelectedValue = row["id_proveedor"];
+
+                if (DateTime.TryParse(row["fecha_entrada"]?.ToString(), out DateTime fe))
+                    dpFechaEntrada_paquetes.SelectedDate = fe;
+                else
+                    dpFechaEntrada_paquetes.SelectedDate = null;
+
+                if (DateTime.TryParse(row["fecha_salida"]?.ToString(), out DateTime fs))
+                    dpFechaSalida_paquetes.SelectedDate = fs;
+                else
+                    dpFechaSalida_paquetes.SelectedDate = null;
+            }
+        }
+
+        private void btnInsertar_paquetes_Click(object sender, RoutedEventArgs e)
+        {
+            if (dpFechaEntrada_paquetes.SelectedDate == null ||
+                dpFechaSalida_paquetes.SelectedDate == null)
+            {
+                MessageBox.Show("Selecciona ambas fechas.");
+                return;
+            }
+
+            DateOnly entrada = DateOnly.FromDateTime(dpFechaEntrada_paquetes.SelectedDate.Value);
+            DateOnly salida = DateOnly.FromDateTime(dpFechaSalida_paquetes.SelectedDate.Value);
+
+            paqueteBD.InsertarPaquete(
+                entrada,
+                salida,
+                txtTipo_paquetes.Text,
+                txtCodigoBarras_paquetes.Text,
+                (int)cbSucursal_paquetes.SelectedValue,
+                (int)cbCliente_paquetes.SelectedValue,
+                (int)cbProveedor_paquetes.SelectedValue
+            );
+
+            MessageBox.Show("Paquete insertado.");
+            CargarPaquetes();
+        }
+
+        private void btnEditar_paquetes_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_paquete.Text, out int id))
+            {
+                MessageBox.Show("Selecciona un paquete.");
+                return;
+            }
+
+            DateOnly entrada = DateOnly.FromDateTime(dpFechaEntrada_paquetes.SelectedDate.Value);
+            DateOnly salida = DateOnly.FromDateTime(dpFechaSalida_paquetes.SelectedDate.Value);
+
+            paqueteBD.EditarPaquete(
+                id,
+                entrada,
+                salida,
+                txtTipo_paquetes.Text,
+                txtCodigoBarras_paquetes.Text,
+                (int)cbSucursal_paquetes.SelectedValue,
+                (int)cbCliente_paquetes.SelectedValue,
+                (int)cbProveedor_paquetes.SelectedValue
+            );
+
+            MessageBox.Show("Paquete actualizado.");
+            CargarPaquetes();
+        }
+
+        private void btnEliminar_paquetes_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_paquete.Text, out int id))
+            {
+                MessageBox.Show("Selecciona un paquete.");
+                return;
+            }
+
+            paqueteBD.EliminarPaquete(id);
+
+            MessageBox.Show("Paquete eliminado.");
+            CargarPaquetes();
+        }
+
+        private void btnLimpiar_paquetes_Click(object sender, RoutedEventArgs e)
+        {
+            txtID_paquete.Text = "";
+            txtTipo_paquetes.Text = "";
+            txtCodigoBarras_paquetes.Text = "";
+
+            cbSucursal_paquetes.SelectedIndex = -1;
+            cbCliente_paquetes.SelectedIndex = -1;
+            cbProveedor_paquetes.SelectedIndex = -1;
+
+            dpFechaEntrada_paquetes.SelectedDate = null;
+            dpFechaSalida_paquetes.SelectedDate = null;
+
+            dgTabla_paquetes.UnselectAll();
+        }
+
+        // ------------------------------- FIN PAQUETES -------------------------------
+
+
+
+
 
 
 
