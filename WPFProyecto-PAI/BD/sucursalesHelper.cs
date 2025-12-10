@@ -1,8 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using WPFProyecto_PAI.Tablas;
 
 namespace BD
 {
@@ -15,33 +13,21 @@ namespace BD
             cadenaConexion = conexion;
         }
 
-        // ================== OBTENER TODAS ==================
-        public List<sucursal> ObtenerSucursales()
+        // ================== OBTENER TODAS (DATA TABLE) ==================
+        public DataTable ObtenerSucursales()
         {
-            List<sucursal> lista = new List<sucursal>();
+            DataTable dt = new DataTable();
 
             using (SqlConnection conn = new SqlConnection(cadenaConexion))
             {
                 conn.Open();
                 string query = "SELECT id_sucursal, nombre, direccion, telefono FROM sucursal";
 
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        lista.Add(new sucursal
-                        {
-                            id_sucursal = dr.GetInt32(0),
-                            nombre = dr.GetString(1),
-                            direccion = dr.GetString(2),
-                            telefono = dr.GetInt32(3)
-                        });
-                    }
-                }
+                SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                da.Fill(dt);
             }
 
-            return lista;
+            return dt;
         }
 
         // ================== INSERTAR ==================
