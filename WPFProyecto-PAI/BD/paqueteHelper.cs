@@ -21,7 +21,18 @@ namespace BD
             using (SqlConnection conn = new SqlConnection(cadena))
             {
                 conn.Open();
-                string query = "SELECT * FROM paquete";
+
+                string query = @"
+        SELECT 
+            id_paquete,
+            FORMAT(fecha_entrada, 'dd/MM/yyyy') AS fecha_entrada,
+            FORMAT(fecha_salida, 'dd/MM/yyyy') AS fecha_salida,
+            tipo_paquete,
+            codigo_barras,
+            id_sucursal,
+            id_cliente,
+            id_proveedor
+        FROM paquete";
 
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 da.Fill(dt);
@@ -50,8 +61,8 @@ namespace BD
 
                 SqlCommand cmd = new SqlCommand(query, conn);
 
-                cmd.Parameters.AddWithValue("@fentrada", entrada.ToDateTime(new TimeOnly(0, 0)));
-                cmd.Parameters.AddWithValue("@fsalida", salida.ToDateTime(new TimeOnly(0, 0)));
+                cmd.Parameters.Add("@fentrada", SqlDbType.Date).Value = entrada;
+                cmd.Parameters.Add("@fsalida", SqlDbType.Date).Value = salida;
                 cmd.Parameters.AddWithValue("@tipo", tipo);
                 cmd.Parameters.AddWithValue("@codigo", codigo);
                 cmd.Parameters.AddWithValue("@sucursal", sucursal);

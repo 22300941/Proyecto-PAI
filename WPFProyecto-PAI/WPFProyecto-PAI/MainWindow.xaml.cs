@@ -119,6 +119,11 @@ namespace WPFProyecto_PAI
                 {
                     CargarProveedores();
                 }
+                if (tab.Header.ToString() == "Paquetes")
+                {
+                    CargarPaquetes();
+                }
+
 
 
             }
@@ -671,17 +676,40 @@ namespace WPFProyecto_PAI
 
         // ------------------------------- PAQUETES -------------------------------
 
+
+
         private void CargarPaquetes()
         {
             try
             {
+                // Cargar la tabla
                 dgTabla_paquetes.ItemsSource = paqueteBD.ObtenerPaquetes().DefaultView;
+
+                // ===== Cargar Sucursales =====
+                var sucursales = sucursalBD.ObtenerSucursales();
+                cbSucursal_paquetes.ItemsSource = sucursales.DefaultView;
+                cbSucursal_paquetes.DisplayMemberPath = "nombre"; // <-- Se ve bonito   
+                cbSucursal_paquetes.SelectedValuePath = "id_sucursal";
+
+                // ===== Cargar Clientes =====
+                var clientes = clientesBD.ObtenerClientes();
+                cbCliente_paquetes.ItemsSource = clientes.DefaultView;
+                cbCliente_paquetes.DisplayMemberPath = "nombre"; // <-- Puedes mostrar nombre
+                cbCliente_paquetes.SelectedValuePath = "id_cliente";
+
+                // ===== Cargar Proveedores =====
+                var proveedores = proveedoresBD.ObtenerProveedores();
+                cbProveedor_paquetes.ItemsSource = proveedores.DefaultView;
+                cbProveedor_paquetes.DisplayMemberPath = "nombre";
+                cbProveedor_paquetes.SelectedValuePath = "id_proveedor";
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error al cargar paquetes: " + ex.Message);
             }
         }
+
+
 
         private void dgTabla_paquetes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -716,6 +744,14 @@ namespace WPFProyecto_PAI
                 return;
             }
 
+            if (cbSucursal_paquetes.SelectedValue == null ||
+                cbCliente_paquetes.SelectedValue == null ||
+                cbProveedor_paquetes.SelectedValue == null)
+            {
+                MessageBox.Show("Selecciona sucursal, cliente y proveedor.");
+                return;
+            }
+
             DateOnly entrada = DateOnly.FromDateTime(dpFechaEntrada_paquetes.SelectedDate.Value);
             DateOnly salida = DateOnly.FromDateTime(dpFechaSalida_paquetes.SelectedDate.Value);
 
@@ -732,6 +768,7 @@ namespace WPFProyecto_PAI
             MessageBox.Show("Paquete insertado.");
             CargarPaquetes();
         }
+
 
         private void btnEditar_paquetes_Click(object sender, RoutedEventArgs e)
         {
@@ -758,6 +795,7 @@ namespace WPFProyecto_PAI
             MessageBox.Show("Paquete actualizado.");
             CargarPaquetes();
         }
+
 
         private void btnEliminar_paquetes_Click(object sender, RoutedEventArgs e)
         {
@@ -789,8 +827,11 @@ namespace WPFProyecto_PAI
             dgTabla_paquetes.UnselectAll();
         }
 
+
         // ------------------------------- FIN PAQUETES -------------------------------
+
         // ------------------------------- CLIENTES -------------------------------
+
 
         private void CargarClientes()
         {
@@ -802,7 +843,7 @@ namespace WPFProyecto_PAI
                 // Cargar sucursales para el ComboBox (FK id_sucursal)
                 var sucursales = sucursalBD.ObtenerSucursales();
                 cbSucursal_clientes.ItemsSource = sucursales.DefaultView;
-                cbSucursal_clientes.DisplayMemberPath = "id_sucursal";
+                cbSucursal_clientes.DisplayMemberPath = "nombre";
                 cbSucursal_clientes.SelectedValuePath = "id_sucursal";
             }
             catch (Exception ex)
@@ -890,6 +931,7 @@ namespace WPFProyecto_PAI
             }
         }
 
+
         private void btnEliminar_clientes_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(txtID_clientes.Text, out int id))
@@ -898,7 +940,8 @@ namespace WPFProyecto_PAI
                 return;
             }
 
-            if (MessageBox.Show("¿Eliminar este cliente?", "Confirmación", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            if (MessageBox.Show("¿Eliminar este cliente?", "Confirmación", MessageBoxButton.YesNo)
+                != MessageBoxResult.Yes)
                 return;
 
             try
@@ -913,6 +956,7 @@ namespace WPFProyecto_PAI
             }
         }
 
+
         private void btnLimpiar_clientes_Click(object sender, RoutedEventArgs e)
         {
             txtID_clientes.Text = "";
@@ -925,6 +969,7 @@ namespace WPFProyecto_PAI
 
             dgTabla_clientes.UnselectAll();
         }
+
 
         // ------------------------------- FIN CLIENTES -------------------------------
 
@@ -941,6 +986,7 @@ namespace WPFProyecto_PAI
                 MessageBox.Show("Error al cargar proveedores: " + ex.Message);
             }
         }
+
 
         private void dgTabla_proveedores_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -1027,13 +1073,6 @@ namespace WPFProyecto_PAI
         }
 
         // ------------------------------- FIN PROVEEDORES -------------------------------
-
-
-
-
-
-
-
 
 
     }

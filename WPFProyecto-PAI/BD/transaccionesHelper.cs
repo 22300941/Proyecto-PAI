@@ -19,7 +19,14 @@ namespace BD
             using (SqlConnection conn = new SqlConnection(cadena))
             {
                 conn.Open();
-                string query = "SELECT id_transaccion, fecha_pago, total, metodo_pago, id_paquete FROM transacciones";
+                string query = @"
+            SELECT 
+                id_transaccion,
+                FORMAT(fecha_pago, 'dd/MM/yyyy') AS fecha_pago,
+                total,
+                metodo_pago,
+                id_paquete
+            FROM transacciones";
 
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 DataTable dt = new DataTable();
@@ -27,6 +34,7 @@ namespace BD
                 return dt;
             }
         }
+
 
         // ===================== INSERTAR =====================
         public void InsertarTransaccion(DateOnly fecha, int total, string metodo, int idPaquete)
@@ -38,6 +46,7 @@ namespace BD
                     "INSERT INTO transacciones(fecha_pago, total, metodo_pago, id_paquete) VALUES(@fecha, @total, @metodo, @idPaquete)";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
+
                 cmd.Parameters.AddWithValue("@fecha", fecha.ToDateTime(TimeOnly.MinValue));
                 cmd.Parameters.AddWithValue("@total", total);
                 cmd.Parameters.AddWithValue("@metodo", metodo);
