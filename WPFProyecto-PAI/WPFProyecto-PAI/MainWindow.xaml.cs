@@ -20,7 +20,7 @@ namespace WPFProyecto_PAI
             InitializeComponent();
 
             // Cadena de conexion a la base de datos
-            cadenaConexion = @"Server=DESKTOP-LEHP21J;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
+            cadenaConexion = @"Server=LAPTOP_ITZEL;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
 
             // Inicializar helpers
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
