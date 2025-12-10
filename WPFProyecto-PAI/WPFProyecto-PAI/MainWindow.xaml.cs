@@ -1,4 +1,4 @@
-﻿using BD;
+using BD;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
@@ -17,6 +17,10 @@ namespace WPFProyecto_PAI
         private servicioHelper servicioBD;
         private transaccionesHelper transaccionesBD;
         private paqueteHelper paqueteBD;
+        private clientesHelper clientesBD;
+        private proveedoresHelper proveedoresBD;
+
+
 
 
 
@@ -40,6 +44,9 @@ namespace WPFProyecto_PAI
 
             transaccionesBD = new transaccionesHelper(cadenaConexion);
             paqueteBD = new paqueteHelper(cadenaConexion);
+
+            clientesBD = new clientesHelper(cadenaConexion);
+            proveedoresBD = new proveedoresHelper(cadenaConexion);
 
 
 
@@ -100,6 +107,17 @@ namespace WPFProyecto_PAI
                 if (tab.Header.ToString() == "Transacciones")
                 {
                     CargarTransacciones();
+                }
+                // Si selecciona Clientes
+                if (tab.Header.ToString() == "Clientes")
+                {
+                    CargarClientes();
+                }
+
+                // Si selecciona Proveedores
+                if (tab.Header.ToString() == "Proveedores")
+                {
+                    CargarProveedores();
                 }
 
 
@@ -772,6 +790,243 @@ namespace WPFProyecto_PAI
         }
 
         // ------------------------------- FIN PAQUETES -------------------------------
+        // ------------------------------- CLIENTES -------------------------------
+
+        private void CargarClientes()
+        {
+            try
+            {
+                // Cargar tabla de clientes
+                dgTabla_clientes.ItemsSource = clientesBD.ObtenerClientes().DefaultView;
+
+                // Cargar sucursales para el ComboBox (FK id_sucursal)
+                var sucursales = sucursalBD.ObtenerSucursales();
+                cbSucursal_clientes.ItemsSource = sucursales.DefaultView;
+                cbSucursal_clientes.DisplayMemberPath = "id_sucursal";
+                cbSucursal_clientes.SelectedValuePath = "id_sucursal";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar clientes: " + ex.Message);
+            }
+        }
+
+        private void dgTabla_clientes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgTabla_clientes.SelectedItem is DataRowView row)
+            {
+                txtID_clientes.Text = row["id_cliente"]?.ToString() ?? "";
+                txtNombre_clientes.Text = row["nombre"]?.ToString() ?? "";
+                txtApellido_clientes.Text = row["apellido"]?.ToString() ?? "";
+                txtTelefono_clientes.Text = row["telefono"]?.ToString() ?? "";
+                txtDireccion_clientes.Text = row["direccion"]?.ToString() ?? "";
+                txtFirma_clientes.Text = row["firma"]?.ToString() ?? "";
+
+                // FK a sucursal
+                cbSucursal_clientes.SelectedValue = row["id_sucursal"];
+            }
+        }
+
+        private void btnInsertar_clientes_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (cbSucursal_clientes.SelectedValue == null)
+                {
+                    MessageBox.Show("Selecciona una sucursal.");
+                    return;
+                }
+
+                clientesBD.InsertarCliente(
+                    txtTelefono_clientes.Text,
+                    txtDireccion_clientes.Text,
+                    txtFirma_clientes.Text,
+                    txtNombre_clientes.Text,
+                    txtApellido_clientes.Text,
+                    (int)cbSucursal_clientes.SelectedValue
+                );
+
+                MessageBox.Show("Cliente insertado correctamente.");
+                CargarClientes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al insertar cliente: " + ex.Message);
+            }
+        }
+
+        private void btnEditar_clientes_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_clientes.Text, out int id))
+            {
+                MessageBox.Show("Selecciona un cliente.");
+                return;
+            }
+
+            if (cbSucursal_clientes.SelectedValue == null)
+            {
+                MessageBox.Show("Selecciona una sucursal.");
+                return;
+            }
+
+            try
+            {
+                clientesBD.EditarCliente(
+                    id,
+                    txtTelefono_clientes.Text,
+                    txtDireccion_clientes.Text,
+                    txtFirma_clientes.Text,
+                    txtNombre_clientes.Text,
+                    txtApellido_clientes.Text,
+                    (int)cbSucursal_clientes.SelectedValue
+                );
+
+                MessageBox.Show("Cliente actualizado.");
+                CargarClientes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al editar cliente: " + ex.Message);
+            }
+        }
+
+        private void btnEliminar_clientes_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_clientes.Text, out int id))
+            {
+                MessageBox.Show("Selecciona un cliente.");
+                return;
+            }
+
+            if (MessageBox.Show("¿Eliminar este cliente?", "Confirmación", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                clientesBD.EliminarCliente(id);
+                MessageBox.Show("Cliente eliminado.");
+                CargarClientes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar cliente: " + ex.Message);
+            }
+        }
+
+        private void btnLimpiar_clientes_Click(object sender, RoutedEventArgs e)
+        {
+            txtID_clientes.Text = "";
+            txtNombre_clientes.Text = "";
+            txtApellido_clientes.Text = "";
+            txtTelefono_clientes.Text = "";
+            txtDireccion_clientes.Text = "";
+            txtFirma_clientes.Text = "";
+            cbSucursal_clientes.SelectedIndex = -1;
+
+            dgTabla_clientes.UnselectAll();
+        }
+
+        // ------------------------------- FIN CLIENTES -------------------------------
+
+        // ------------------------------- PROVEEDORES -------------------------------
+
+        private void CargarProveedores()
+        {
+            try
+            {
+                dgTabla_proveedores.ItemsSource = proveedoresBD.ObtenerProveedores().DefaultView;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar proveedores: " + ex.Message);
+            }
+        }
+
+        private void dgTabla_proveedores_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgTabla_proveedores.SelectedItem is DataRowView row)
+            {
+                txtID_proveedores.Text = row["id_proveedor"]?.ToString() ?? "";
+                txtNombre_proveedores.Text = row["nombre"]?.ToString() ?? "";
+                txtTelefono_proveedores.Text = row["telefono"]?.ToString() ?? "";
+            }
+        }
+
+        private void btnInsertar_proveedores_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                proveedoresBD.InsertarProveedor(
+                    txtNombre_proveedores.Text,
+                    txtTelefono_proveedores.Text
+                );
+
+                MessageBox.Show("Proveedor insertado.");
+                CargarProveedores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al insertar proveedor: " + ex.Message);
+            }
+        }
+
+        private void btnEditar_proveedores_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_proveedores.Text, out int id))
+            {
+                MessageBox.Show("Selecciona un proveedor.");
+                return;
+            }
+
+            try
+            {
+                proveedoresBD.EditarProveedor(
+                    id,
+                    txtNombre_proveedores.Text,
+                    txtTelefono_proveedores.Text
+                );
+
+                MessageBox.Show("Proveedor actualizado.");
+                CargarProveedores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al editar proveedor: " + ex.Message);
+            }
+        }
+
+        private void btnEliminar_proveedores_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_proveedores.Text, out int id))
+            {
+                MessageBox.Show("Selecciona un proveedor.");
+                return;
+            }
+
+            if (MessageBox.Show("¿Eliminar este proveedor?", "Confirmación", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                proveedoresBD.EliminarProveedor(id);
+                MessageBox.Show("Proveedor eliminado.");
+                CargarProveedores();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar proveedor: " + ex.Message);
+            }
+        }
+
+        private void btnLimpiar_proveedores_Click(object sender, RoutedEventArgs e)
+        {
+            txtID_proveedores.Text = "";
+            txtNombre_proveedores.Text = "";
+            txtTelefono_proveedores.Text = "";
+            dgTabla_proveedores.UnselectAll();
+        }
+
+        // ------------------------------- FIN PROVEEDORES -------------------------------
 
 
 
