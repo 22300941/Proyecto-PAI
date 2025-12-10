@@ -20,7 +20,7 @@ namespace WPFProyecto_PAI
             InitializeComponent();
 
             // Cadena de conexion a la base de datos
-            cadenaConexion = @"Server=LAPTOP_ITZEL;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
+            cadenaConexion = @"Server=FABIANCETI;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
 
             // Inicializar helpers
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
@@ -219,5 +219,6 @@ namespace WPFProyecto_PAI
             txtHoraFin.Text = "";
             txtDia.Text = "";
         }
+        // -------------------------------  FIN TRABAJADORES -------------------------------
     }
 }
