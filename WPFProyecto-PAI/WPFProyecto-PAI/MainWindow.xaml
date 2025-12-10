@@ -95,7 +95,8 @@
             </TabItem>
             <TabItem Header="Paquetes">
                 <Grid Margin="10">
-                    <TextBlock Text="Paquetes"/>
+                    <TextBox HorizontalAlignment="Left" Margin="107,178,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+                    <Label Content="Label" HorizontalAlignment="Left" Margin="125,134,0,0" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Clientes">
@@ -119,21 +120,42 @@
             </TabItem>
             <TabItem Header="Transacciones">
                 <Grid Margin="10">
-                    <Label Content="ID" Margin="0,0,664,438"/>
-                    <TextBox x:Name="txtIDtransaccion" IsReadOnly="True" Margin="0,26,664,420"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0,0,10,0">
+
+                            <Label Content="ID"/>
+                            <TextBox x:Name="txtIDtransaccion" IsReadOnly="True"/>
+
+                            <Label Content="Fecha de pago"/>
+                            <TextBox x:Name="txtFechaPago" IsReadOnly="True"/>
+
+                            <Label Content="Total"/>
+                            <TextBox x:Name="txtTotal" IsReadOnly="True"/>
+
+                            <Label Content="Método de pago"/>
+                            <TextBox x:Name="txtMetodoPago" IsReadOnly="True"/>
+
+                            <Label Content="ID paquete"/>
+                            <TextBox x:Name="txtIDpaquete" IsReadOnly="True"/>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
                     <DataGrid x:Name="dgTablaTransacciones"
-                        Grid.Row="0"
-                        Margin="310,0,0,66"
-                        AutoGenerateColumns="True"
-                        SelectionChanged="dgTabla_SelectionChanged"/>
-                    <Label Content="Fecha de pago" Margin="0,46,664,392"/>
-                    <TextBox x:Name="txtFechaPago" IsReadOnly="True" Margin="0,72,664,374"/>
-                    <Label Content="Total" Margin="0,92,664,346"/>
-                    <TextBox x:Name="txtTotal" IsReadOnly="True" Margin="0,118,664,328"/>
-                    <Label Content="Método de pago" Margin="0,138,664,300"/>
-                    <TextBox x:Name="txtMetodoPago" IsReadOnly="True" Margin="0,164,664,282"/>
-                    <Label Content="ID paquete" Margin="0,188,664,250"/>
-                    <TextBox x:Name="txtIDpaquete" IsReadOnly="True" Margin="0,214,664,232"/>
+            Grid.Column="1"
+            Margin="10,0,0,122"
+            AutoGenerateColumns="True"
+            SelectionChanged="dgTabla_SelectionChanged"/>
+                    <Button x:Name="btnInsertarTrans" Content="Insertar" HorizontalAlignment="Left" Margin="207,391,0,0" VerticalAlignment="Top" Height="36" Width="131" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnActualizarTrans" Content="Actualizar" HorizontalAlignment="Left" Margin="65,391,0,0" VerticalAlignment="Top" Height="36" Width="131" Grid.Column="1"/>
+                    <Button x:Name="btnEliminarTrans" Content="Eliminar" HorizontalAlignment="Left" Margin="227,391,0,0" VerticalAlignment="Top" Height="36" Width="131" Grid.Column="1"/>
+                    <Button x:Name="btnLimpiarTrans" Content="Limpiar" HorizontalAlignment="Left" Margin="391,391,0,0" VerticalAlignment="Top" Height="36" Width="131" Grid.Column="1"/>
+
                 </Grid>
             </TabItem>
 

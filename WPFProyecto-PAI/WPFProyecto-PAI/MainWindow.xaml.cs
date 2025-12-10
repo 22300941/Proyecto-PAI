@@ -20,7 +20,7 @@ namespace WPFProyecto_PAI
             InitializeComponent();
 
             // Cadena de conexion a la base de datos
-            cadenaConexion = @"Server=FABIANCETI;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
+            cadenaConexion = @"Server=LAPTOP_ITZEL;Database=Paqueteria;Integrated Security=True;TrustServerCertificate=True;";
 
             // Inicializar helpers
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
@@ -47,7 +47,7 @@ namespace WPFProyecto_PAI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar trabajadores: " + ex.Message);
+                //MessageBox.Show("Error al cargar trabajadores: " + ex.Message);
             }
         }
 
