@@ -28,13 +28,14 @@
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="254.2"/>
+                        <ColumnDefinition Width="45.8"/>
                         <ColumnDefinition Width="43*"/>
                         <ColumnDefinition Width="175*"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- =============== CAMPOS =============== -->
-                    <ScrollViewer Grid.Row="0" Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="0" Grid.Column="0" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2">
                         <StackPanel Margin="0,0,10,0">
 
                             <Label Content="ID"/>
@@ -64,7 +65,7 @@
                     <!-- =============== TABLA =============== -->
                     <DataGrid x:Name="dgTabla"
                   Grid.Row="0"
-                  Grid.Column="1"
+                  Grid.Column="2"
                   Margin="10,0,0,0"
                   AutoGenerateColumns="True"
                   SelectionChanged="dgTabla_SelectionChanged" Grid.ColumnSpan="2"/>
@@ -72,7 +73,7 @@
                     <!-- =============== BOTONES =============== -->
                     <StackPanel Grid.Row="1"
                     Grid.Column="0"
-                    Grid.ColumnSpan="3"
+                    Grid.ColumnSpan="4"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     Margin="197,10,0,0">
@@ -90,7 +91,42 @@
             <!-- Otras pestañas -->
             <TabItem Header="Servicios">
                 <Grid Margin="10">
-                    <TextBlock Text="Servicios"/>
+                    <Grid Margin="10,10,-10,-10">
+                        <DataGrid x:Name="dgTabla_Servicio"
+                            Grid.Row="0"
+                            Margin="310,0,0,66"
+                            AutoGenerateColumns="True"
+                            SelectionChanged="dgTabla_Sucursales_SelectionChanged"/>
+                        <ScrollViewer Grid.Row="0" Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,654,66">
+                            <StackPanel Margin="0,0,10,0">
+
+                                <Label Content="ID"/>
+                                <TextBox x:Name="txtID_servicio" IsReadOnly="True"/>
+
+                                <Label Content="Descripcion"/>
+                                <TextBox x:Name="txtDescripcion_servicio" Height="108"/>
+
+                                <Label Content="Costo"/>
+                                <TextBox x:Name="txtCosto_servicio"/>
+
+                                <Label Content="ID del Paquete"/>
+                                <ComboBox x:Name="cbPaquetes_servicio" Height="30"/>
+
+
+                            </StackPanel>
+                        </ScrollViewer>
+                        <StackPanel
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,408,0,0">
+
+                            <Button x:Name="btnInsertar_servicio" Content="Insertar" Width="120" Height="36" Margin="10" Click="btnInsertar_servicio_Click"/>
+                            <Button x:Name="btnEditar_servicio"   Content="Editar"   Width="120" Height="36" Margin="10" Click="btnEditar_servicio_Click"/>
+                            <Button x:Name="btnEliminar_servicio" Content="Eliminar" Width="120" Height="36" Margin="10" Click="btnEliminar_servicio_Click"/>
+                            <Button x:Name="btnLimpiar_servicio"  Content="Limpiar"  Width="120" Height="36" Margin="10" Click="btnLimpiar_servicio_Click"/>
+
+                        </StackPanel>
+                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Paquetes">
@@ -106,7 +142,39 @@
             </TabItem>
             <TabItem Header="Sucursales">
                 <Grid Margin="10">
-                    <TextBlock Text="Sucursales"/>
+                    <DataGrid x:Name="dgTabla_Sucursales"
+                        Grid.Row="0"
+                        Margin="310,0,0,66"
+                        AutoGenerateColumns="True"
+                        SelectionChanged="dgTabla_Sucursales_SelectionChanged"/>
+                    <ScrollViewer Grid.Row="0" Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,0,654,66">
+                        <StackPanel Margin="0,0,10,0">
+
+                            <Label Content="ID"/>
+                            <TextBox x:Name="txtID_sucursales" IsReadOnly="True"/>
+
+                            <Label Content="Nombre"/>
+                            <TextBox x:Name="txtNombre_sucursales"/>
+
+                            <Label Content="Direccion"/>
+                            <TextBox x:Name="txtDireccion_sucursales"/>
+
+                            <Label Content="Telefono"/>
+                            <TextBox x:Name="txtTelefono_sucursales"/>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,408,0,0">
+
+                        <Button x:Name="btnInsertar_sucursales" Content="Insertar" Width="120" Height="36" Margin="10" Click="btnInsertar_sucursales_Click"/>
+                        <Button x:Name="btnEditar_sucursales"   Content="Editar"   Width="120" Height="36" Margin="10" Click="btnEditar_sucursales_Click"/>
+                        <Button x:Name="btnEliminar_sucursales" Content="Eliminar" Width="120" Height="36" Margin="10" Click="btnEliminar_sucursales_Click"/>
+                        <Button x:Name="btnLimpiar_sucursales"  Content="Limpiar"  Width="120" Height="36" Margin="10" Click="btnLimpiar_sucursales_Click"/>
+
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="Proveedores">
