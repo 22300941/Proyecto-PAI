@@ -13,6 +13,11 @@ namespace WPFProyecto_PAI
     {
         private trabajadoresHelper trabajadorBD;
         private turnoHelper turnoBD;
+        private sucursalesHelper sucursalBD;
+        private servicioHelper servicioBD;
+
+
+
         private string cadenaConexion;
 
         public MainWindow()
@@ -25,7 +30,16 @@ namespace WPFProyecto_PAI
             // Inicializar helpers
             trabajadorBD = new trabajadoresHelper(cadenaConexion);
             turnoBD = new turnoHelper(cadenaConexion);
+
+            sucursalBD = new sucursalesHelper(cadenaConexion);
+            servicioBD = new servicioHelper(cadenaConexion);
+
+
+
+
         }
+
+
 
         // ------------------------------- TRABAJADORES -------------------------------
         private void CargarTrabajadores()
@@ -57,10 +71,22 @@ namespace WPFProyecto_PAI
 
             if (tabContenedor.SelectedItem is TabItem tab)
             {
+                // Si selecciona Trabajadores
                 if (tab.Header.ToString() == "Trabajadores")
                 {
                     CargarTrabajadores();
                 }
+
+                // Si selecciona Sucursales
+                if (tab.Header.ToString() == "Sucursales")
+                {
+                    CargarSucursales();
+                }
+                if (tab.Header.ToString() == "Servicios")
+                {
+                    CargarServicios();
+                }
+
             }
         }
 
@@ -220,5 +246,251 @@ namespace WPFProyecto_PAI
             txtDia.Text = "";
         }
         // -------------------------------  FIN TRABAJADORES -------------------------------
+
+
+        // ------------------------------- SUCURSALES -------------------------------
+
+
+
+        private void CargarSucursales()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(cadenaConexion))
+                {
+                    conn.Open();
+
+                    string query = "SELECT id_sucursal, nombre, direccion, telefono FROM sucursal";
+
+                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    dgTabla_Sucursales.ItemsSource = dt.DefaultView;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar sucursales: " + ex.Message);
+            }
+        }
+
+
+
+        private void dgTabla_Sucursales_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgTabla_Sucursales.SelectedItem is DataRowView row)
+            {
+                txtID_sucursales.Text = row["id_sucursal"]?.ToString() ?? "";
+                txtNombre_sucursales.Text = row["nombre"]?.ToString() ?? "";
+                txtDireccion_sucursales.Text = row["direccion"]?.ToString() ?? "";
+                txtTelefono_sucursales.Text = row["telefono"]?.ToString() ?? "";
+            }
+        }
+
+
+        private void btnInsertar_sucursales_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtTelefono_sucursales.Text, out int tel))
+            {
+                MessageBox.Show("Teléfono inválido.");
+                return;
+            }
+
+            try
+            {
+                sucursalBD.InsertarSucursal(
+                    txtNombre_sucursales.Text,
+                    txtDireccion_sucursales.Text,
+                    tel
+                );
+
+                MessageBox.Show("Sucursal insertada.");
+                CargarSucursales();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al insertar: " + ex.Message);
+            }
+        }
+
+        private void btnEditar_sucursales_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_sucursales.Text, out int id))
+            {
+                MessageBox.Show("Selecciona una sucursal.");
+                return;
+            }
+
+            if (!int.TryParse(txtTelefono_sucursales.Text, out int tel))
+            {
+                MessageBox.Show("Teléfono inválido.");
+                return;
+            }
+
+            try
+            {
+                sucursalBD.EditarSucursal(id, txtNombre_sucursales.Text, txtDireccion_sucursales.Text, tel);
+                MessageBox.Show("Sucursal actualizada.");
+                CargarSucursales();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al editar: " + ex.Message);
+            }
+        }
+
+
+        private void btnEliminar_sucursales_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_sucursales.Text, out int id))
+            {
+                MessageBox.Show("Selecciona una sucursal.");
+                return;
+            }
+
+            if (MessageBox.Show("¿Eliminar esta sucursal?", "Confirmación", MessageBoxButton.YesNo)
+                != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                sucursalBD.EliminarSucursal(id);
+                MessageBox.Show("Sucursal eliminada.");
+                CargarSucursales();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al eliminar: " + ex.Message);
+            }
+        }
+
+
+        private void btnLimpiar_sucursales_Click(object sender, RoutedEventArgs e)
+        {
+            txtID_sucursales.Text = "";
+            txtNombre_sucursales.Text = "";
+            txtDireccion_sucursales.Text = "";
+            txtTelefono_sucursales.Text = "";
+        }
+
+
+
+
+
+
+        // ------------------------------- FIN SUCURSALES -------------------------------
+
+
+        // ------------------------------- SERVICIO -------------------------------
+        private void CargarServicios()
+        {
+            try
+            {
+                // Cargar servicios en la tabla
+                dgTabla_Servicio.ItemsSource = servicioBD.ObtenerServicios().DefaultView;
+
+                // Cargar lista de paquetes
+                var paquetes = servicioBD.ObtenerPaquetes();
+                cbPaquetes_servicio.ItemsSource = paquetes.DefaultView;
+                cbPaquetes_servicio.DisplayMemberPath = "id_paquete";
+                cbPaquetes_servicio.SelectedValuePath = "id_paquete";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar servicios: " + ex.Message);
+            }
+        }
+
+        private void dgTabla_Servicio_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dgTabla_Servicio.SelectedItem is DataRowView row)
+            {
+                txtID_servicio.Text = row["id_servicio"]?.ToString() ?? "";
+                txtDescripcion_servicio.Text = row["descripción"]?.ToString() ?? "";
+                txtCosto_servicio.Text = row["costo"]?.ToString() ?? "";
+
+                cbPaquetes_servicio.SelectedValue = row["id_paquete"];
+            }
+        }
+
+        private void btnInsertar_servicio_Click(object sender, RoutedEventArgs e)
+        {
+            if (!decimal.TryParse(txtCosto_servicio.Text, out decimal costo))
+            {
+                MessageBox.Show("Costo inválido.");
+                return;
+            }
+
+            if (cbPaquetes_servicio.SelectedValue == null)
+            {
+                MessageBox.Show("Selecciona un paquete.");
+                return;
+            }
+
+            servicioBD.InsertarServicio(
+                txtDescripcion_servicio.Text,
+                costo,
+                (int)cbPaquetes_servicio.SelectedValue
+            );
+
+            MessageBox.Show("Servicio insertado.");
+            CargarServicios();
+        }
+
+        private void btnEditar_servicio_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_servicio.Text, out int id))
+            {
+                MessageBox.Show("Selecciona un servicio.");
+                return;
+            }
+
+            if (!decimal.TryParse(txtCosto_servicio.Text, out decimal costo))
+            {
+                MessageBox.Show("Costo inválido.");
+                return;
+            }
+
+            servicioBD.EditarServicio(
+                id,
+                txtDescripcion_servicio.Text,
+                costo,
+                (int)cbPaquetes_servicio.SelectedValue
+            );
+
+            MessageBox.Show("Servicio actualizado.");
+            CargarServicios();
+        }
+
+        private void btnEliminar_servicio_Click(object sender, RoutedEventArgs e)
+        {
+            if (!int.TryParse(txtID_servicio.Text, out int id))
+            {
+                MessageBox.Show("Selecciona un servicio.");
+                return;
+            }
+
+            servicioBD.EliminarServicio(id);
+
+            MessageBox.Show("Servicio eliminado.");
+            CargarServicios();
+        }
+
+        private void btnLimpiar_servicio_Click(object sender, RoutedEventArgs e)
+        {
+            txtID_servicio.Text = "";
+            txtDescripcion_servicio.Text = "";
+            txtCosto_servicio.Text = "";
+            cbPaquetes_servicio.SelectedIndex = -1;
+        }
+
+
+        // ------------------------------- FIN SERVICIO -------------------------------
+
+
+
+
+
     }
 }
