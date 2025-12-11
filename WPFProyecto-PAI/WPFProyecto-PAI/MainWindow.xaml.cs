@@ -50,8 +50,10 @@ namespace WPFProyecto_PAI
             clientesBD = new clientesHelper(cadenaConexion);
             proveedoresBD = new proveedoresHelper(cadenaConexion);
 
-            servicioPaqueteBD = new servicioPaqueteHelper(cadenaConexion);
-            //sucursalClienteBD = new servicioClienteHelper(cadenaConexion);
+
+
+
+
 
 
         }
@@ -1136,22 +1138,10 @@ namespace WPFProyecto_PAI
             da.SelectCommand.Parameters.AddWithValue("@s", idSucursal);
             da.Fill(dt);
 
-            return dt;
-        }
 
-        public void QuitarClienteDeSucursal(int idCliente)
-        {
-            using SqlConnection conn = new SqlConnection(cadena);
-            conn.Open();
 
-            string query = "UPDATE cliente SET id_sucursal = NULL WHERE id_cliente=@c";
 
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@c", idCliente);
-            cmd.ExecuteNonQuery();
-        }
 
-        // ------------------------------- FIN SUCURSAL-CLIENTE -------------------------------
 
         */
 
