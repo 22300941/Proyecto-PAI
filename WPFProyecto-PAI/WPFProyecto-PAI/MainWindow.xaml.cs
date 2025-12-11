@@ -1072,7 +1072,90 @@ namespace WPFProyecto_PAI
             dgTabla_proveedores.UnselectAll();
         }
 
-        // ------------------------------- FIN PROVEEDORES -------------------------------
+
+        // ------------------------------- FIN PROVEEDORES ------------------------------
+
+
+        //aaa/
+        /*
+        // ------------------------------- SERVICIO-PAQUETE -------------------------------
+
+        private void btnAsignar_Click(object sender, RoutedEventArgs e)
+        {
+            int idServicio = int.Parse(cmbServicios.SelectedValue.ToString());
+            int idPaquete = int.Parse(cmbPaquetes.SelectedValue.ToString());
+
+            spHelper.AsignarServicioPaquete(idServicio, idPaquete);
+
+            MessageBox.Show("Servicio asignado al paquete.");
+        }
+
+        private void btnVerServicios_Click(object sender, RoutedEventArgs e)
+        {
+            int idPaquete = int.Parse(cmbPaquetes.SelectedValue.ToString());
+            dataGridServicios.ItemsSource = spHelper.ObtenerServiciosDePaquete(idPaquete).DefaultView;
+        }
+
+        private void btnQuitar_Click(object sender, RoutedEventArgs e)
+        {
+            int idServicio = int.Parse(cmbServicios.SelectedValue.ToString());
+            int idPaquete = int.Parse(cmbPaquetes.SelectedValue.ToString());
+
+            spHelper.QuitarServicioDePaquete(idServicio, idPaquete);
+        }
+        // ------------------------------- FIN SERVICIO-PAQUETE -------------------------------
+
+        // ------------------------------- SUCURSAL-CLIENTE -------------------------------
+
+        public void AsignarClienteASucursal(int idCliente, int idSucursal)
+        {
+            using SqlConnection conn = new SqlConnection(cadena);
+            conn.Open();
+
+            string query = "UPDATE cliente SET id_sucursal=@s WHERE id_cliente=@c";
+
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@s", idSucursal);
+            cmd.Parameters.AddWithValue("@c", idCliente);
+            cmd.ExecuteNonQuery();
+        }
+
+        public DataTable ObtenerClientesDeSucursal(int idSucursal)
+        {
+            DataTable dt = new DataTable();
+
+            using SqlConnection conn = new SqlConnection(cadena);
+            conn.Open();
+
+            string query = @"
+                SELECT c.id_cliente, c.nombre, c.apellido, c.telefono, c.direccion
+                FROM cliente c
+                WHERE c.id_sucursal = @s";
+
+            SqlDataAdapter da = new SqlDataAdapter(query, conn);
+            da.SelectCommand.Parameters.AddWithValue("@s", idSucursal);
+            da.Fill(dt);
+
+            return dt;
+        }
+
+        public void QuitarClienteDeSucursal(int idCliente)
+        {
+            using SqlConnection conn = new SqlConnection(cadena);
+            conn.Open();
+
+            string query = "UPDATE cliente SET id_sucursal = NULL WHERE id_cliente=@c";
+
+            SqlCommand cmd = new SqlCommand(query, conn);
+            cmd.Parameters.AddWithValue("@c", idCliente);
+            cmd.ExecuteNonQuery();
+        }
+
+        // ------------------------------- FIN SUCURSAL-CLIENTE -------------------------------
+
+        */
+
+        int chingatumadre = 1; 
 
 
     }
