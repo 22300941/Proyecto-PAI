@@ -1076,8 +1076,6 @@ namespace WPFProyecto_PAI
         // ------------------------------- FIN PROVEEDORES ------------------------------
 
 
-        //aaa/
-        /*
         // ------------------------------- SERVICIO-PAQUETE -------------------------------
 
         private void btnAsignar_SP_Click(object sender, RoutedEventArgs e)
@@ -1152,7 +1150,7 @@ namespace WPFProyecto_PAI
 
 
 
-        */
+        
 
         int chingatumadre = 1; 
        
