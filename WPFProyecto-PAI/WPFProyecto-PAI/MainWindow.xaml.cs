@@ -1083,7 +1083,7 @@ namespace WPFProyecto_PAI
             int idServicio = (int)cbServicios_SP.SelectedValue;
             int idPaquete = (int)cbPaquetes_SP.SelectedValue;
 
-            spHelper.AsignarServicioPaquete(idServicio, idPaquete);
+            servicioPaqueteBD.AsignarServicioPaquete(idServicio, idPaquete);
 
             MessageBox.Show("Servicio asignado");
             CargarServiciosDePaquete();
@@ -1094,7 +1094,7 @@ namespace WPFProyecto_PAI
             int idServicio = (int)cbServicios_SP.SelectedValue;
             int idPaquete = (int)cbPaquetes_SP.SelectedValue;
 
-            spHelper.QuitarServicioDePaquete(idServicio, idPaquete);
+            servicioPaqueteBD.QuitarServicioDePaquete(idServicio, idPaquete);
 
             MessageBox.Show("Servicio quitado");
             CargarServiciosDePaquete();
@@ -1106,7 +1106,7 @@ namespace WPFProyecto_PAI
 
             int idPaquete = (int)cbPaquetes_SP.SelectedValue;
             dgServiciosDePaquete.ItemsSource =
-                spHelper.ObtenerServiciosDePaquete(idPaquete).DefaultView;
+                servicioPaqueteBD.ObtenerServiciosDePaquete(idPaquete).DefaultView;
         }
 
         // ------------------------------- FIN SERVICIO-PAQUETE -------------------------------
@@ -1118,7 +1118,7 @@ namespace WPFProyecto_PAI
             int idSucursal = (int)cbSucursales_SC.SelectedValue;
             int idCliente = (int)cbClientes_SC.SelectedValue;
 
-            scHelper.AsignarClienteASucursal(idCliente, idSucursal);
+            sucursalClienteBD.AsignarClienteASucursal(idCliente, idSucursal);
 
             MessageBox.Show("Cliente asignado");
             CargarClientesDeSucursal();
@@ -1128,7 +1128,7 @@ namespace WPFProyecto_PAI
         {
             int idCliente = (int)cbClientes_SC.SelectedValue;
 
-            scHelper.QuitarClienteDeSucursal(idCliente);
+            sucursalClienteBD.QuitarClienteDeSucursal(idCliente);
 
             MessageBox.Show("Cliente quitado");
             CargarClientesDeSucursal();
@@ -1141,7 +1141,7 @@ namespace WPFProyecto_PAI
             int idSucursal = (int)cbSucursales_SC.SelectedValue;
 
             dgClientesDeSucursal.ItemsSource =
-                scHelper.ObtenerClientesDeSucursal(idSucursal).DefaultView;
+                sucursalClienteBD.ObtenerClientesDeSucursal(idSucursal).DefaultView;
         }
                                                                 
 
@@ -1157,4 +1157,5 @@ namespace WPFProyecto_PAI
 
     }
 }
+
 
