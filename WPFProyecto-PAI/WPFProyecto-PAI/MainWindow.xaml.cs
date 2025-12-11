@@ -19,6 +19,8 @@ namespace WPFProyecto_PAI
         private paqueteHelper paqueteBD;
         private clientesHelper clientesBD;
         private proveedoresHelper proveedoresBD;
+        private servicioPaqueteHelper servicioPaqueteBD;
+        private sucursalClienteHelper sucursalClienteBD;
 
 
 
@@ -48,10 +50,8 @@ namespace WPFProyecto_PAI
             clientesBD = new clientesHelper(cadenaConexion);
             proveedoresBD = new proveedoresHelper(cadenaConexion);
 
-
-
-
-
+            servicioPaqueteBD = new servicioPaqueteHelper(cadenaConexion);
+            //sucursalClienteBD = new servicioClienteHelper(cadenaConexion);
 
 
         }
@@ -124,7 +124,7 @@ namespace WPFProyecto_PAI
                     CargarPaquetes();
                 }
 
-                 
+
 
             }
         }
@@ -524,7 +524,7 @@ namespace WPFProyecto_PAI
             cbPaquetes_servicio.SelectedIndex = -1;
         }
 
-       
+
 
         // ------------------------------- FIN SERVICIO -------------------------------
 
@@ -1156,7 +1156,8 @@ namespace WPFProyecto_PAI
         */
 
         int chingatumadre = 1; 
-
+       
 
     }
 }
+
