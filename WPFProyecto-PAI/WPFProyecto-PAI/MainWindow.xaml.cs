@@ -47,7 +47,8 @@ namespace WPFProyecto_PAI
             clientesBD = new clientesHelper(cadenaConexion);
             proveedoresBD = new proveedoresHelper(cadenaConexion);
 
-
+            servicioPaqueteBD = new servicioPaqueteHelper(cadenaConexion);
+            sucursalClienteBD = new sucursalClienteHelper(cadenaConexion);
 
 
 
@@ -1079,61 +1080,72 @@ namespace WPFProyecto_PAI
         /*
         // ------------------------------- SERVICIO-PAQUETE -------------------------------
 
-        private void btnAsignar_Click(object sender, RoutedEventArgs e)
+        private void btnAsignar_SP_Click(object sender, RoutedEventArgs e)
         {
-            int idServicio = int.Parse(cmbServicios.SelectedValue.ToString());
-            int idPaquete = int.Parse(cmbPaquetes.SelectedValue.ToString());
+            int idServicio = (int)cbServicios_SP.SelectedValue;
+            int idPaquete = (int)cbPaquetes_SP.SelectedValue;
 
             spHelper.AsignarServicioPaquete(idServicio, idPaquete);
 
-            MessageBox.Show("Servicio asignado al paquete.");
+            MessageBox.Show("Servicio asignado");
+            CargarServiciosDePaquete();
         }
 
-        private void btnVerServicios_Click(object sender, RoutedEventArgs e)
+        private void btnQuitar_SP_Click(object sender, RoutedEventArgs e)
         {
-            int idPaquete = int.Parse(cmbPaquetes.SelectedValue.ToString());
-            dataGridServicios.ItemsSource = spHelper.ObtenerServiciosDePaquete(idPaquete).DefaultView;
-        }
-
-        private void btnQuitar_Click(object sender, RoutedEventArgs e)
-        {
-            int idServicio = int.Parse(cmbServicios.SelectedValue.ToString());
-            int idPaquete = int.Parse(cmbPaquetes.SelectedValue.ToString());
+            int idServicio = (int)cbServicios_SP.SelectedValue;
+            int idPaquete = (int)cbPaquetes_SP.SelectedValue;
 
             spHelper.QuitarServicioDePaquete(idServicio, idPaquete);
+
+            MessageBox.Show("Servicio quitado");
+            CargarServiciosDePaquete();
         }
+
+        private void CargarServiciosDePaquete()
+        {
+            if (cbPaquetes_SP.SelectedValue == null) return;
+
+            int idPaquete = (int)cbPaquetes_SP.SelectedValue;
+            dgServiciosDePaquete.ItemsSource =
+                spHelper.ObtenerServiciosDePaquete(idPaquete).DefaultView;
+        }
+
         // ------------------------------- FIN SERVICIO-PAQUETE -------------------------------
 
         // ------------------------------- SUCURSAL-CLIENTE -------------------------------
 
-        public void AsignarClienteASucursal(int idCliente, int idSucursal)
+        private void btnAsignar_SC_Click(object sender, RoutedEventArgs e)
         {
-            using SqlConnection conn = new SqlConnection(cadena);
-            conn.Open();
+            int idSucursal = (int)cbSucursales_SC.SelectedValue;
+            int idCliente = (int)cbClientes_SC.SelectedValue;
 
-            string query = "UPDATE cliente SET id_sucursal=@s WHERE id_cliente=@c";
+            scHelper.AsignarClienteASucursal(idCliente, idSucursal);
 
-            SqlCommand cmd = new SqlCommand(query, conn);
-            cmd.Parameters.AddWithValue("@s", idSucursal);
-            cmd.Parameters.AddWithValue("@c", idCliente);
-            cmd.ExecuteNonQuery();
+            MessageBox.Show("Cliente asignado");
+            CargarClientesDeSucursal();
         }
 
-        public DataTable ObtenerClientesDeSucursal(int idSucursal)
+        private void btnQuitar_SC_Click(object sender, RoutedEventArgs e)
         {
-            DataTable dt = new DataTable();
+            int idCliente = (int)cbClientes_SC.SelectedValue;
 
-            using SqlConnection conn = new SqlConnection(cadena);
-            conn.Open();
+            scHelper.QuitarClienteDeSucursal(idCliente);
 
-            string query = @"
-                SELECT c.id_cliente, c.nombre, c.apellido, c.telefono, c.direccion
-                FROM cliente c
-                WHERE c.id_sucursal = @s";
+            MessageBox.Show("Cliente quitado");
+            CargarClientesDeSucursal();
+        }
 
-            SqlDataAdapter da = new SqlDataAdapter(query, conn);
-            da.SelectCommand.Parameters.AddWithValue("@s", idSucursal);
-            da.Fill(dt);
+        private void CargarClientesDeSucursal()
+        {
+            if (cbSucursales_SC.SelectedValue == null) return;
+
+            int idSucursal = (int)cbSucursales_SC.SelectedValue;
+
+            dgClientesDeSucursal.ItemsSource =
+                scHelper.ObtenerClientesDeSucursal(idSucursal).DefaultView;
+        }
+                                                                
 
 
 

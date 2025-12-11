@@ -427,6 +427,79 @@
                 </Grid>
             </TabItem>
 
+            <TabItem Header="Servicio-Paquete">
+                <Grid Margin="10">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- PANEL DE ASIGNACIÓN -->
+                    <StackPanel Grid.Column="0" Margin="0,0,20,0">
+
+                        <Label Content="Servicio"/>
+                        <ComboBox x:Name="cbServicios_SP" Height="30"/>
+
+                        <Label Content="Paquete"/>
+                        <ComboBox x:Name="cbPaquetes_SP" Height="30"/>
+
+                        <Button Content="Asignar Servicio a Paquete"
+                            Height="36" Margin="0,15,0,0"
+                            Click="btnAsignar_SP_Click"/>
+                        <Button Content="Quitar Servicio de Paquete"
+                            Height="36" Margin="0,10,0,0"
+                            Click="btnQuitar_SP_Click"/>
+
+                    </StackPanel>
+
+                        <!-- TABLA RELACIÓN -->
+                    <DataGrid x:Name="dgServiciosDePaquete"
+                        Grid.Column="1"
+                        AutoGenerateColumns="True"
+                        Margin="10,0,0,0"/>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Sucursal-Cliente">
+                <Grid Margin="10">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- PANEL DE ASIGNACIÓN -->
+                    <StackPanel Grid.Column="0" Margin="0,0,20,0">
+
+                        <Label Content="Sucursal"/>
+                        <ComboBox x:Name="cbSucursales_SC" Height="30"/>
+
+                        <Label Content="Cliente"/>
+                        <ComboBox x:Name="cbClientes_SC" Height="30"/>
+
+                        <Button Content="Asignar Cliente a Sucursal"
+                            Height="36" Margin="0,15,0,0"
+                            Click="btnAsignar_SC_Click"/>
+
+                        <Button Content="Quitar Cliente de Sucursal"
+                            Height="36" Margin="0,10,0,0"
+                            Click="btnQuitar_SC_Click"/>
+
+                    </StackPanel>
+
+                    <!-- TABLA RELACIÓN -->
+                    <DataGrid x:Name="dgClientesDeSucursal"
+                        Grid.Column="1"
+                        AutoGenerateColumns="True"
+                        Margin="10,0,0,0"/>
+
+                </Grid>
+            </TabItem>
+                                                                                                                                                                                                                                                                                                                
+
+
         </TabControl>
     </Grid>
 </Window>
