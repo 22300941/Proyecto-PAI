@@ -78,7 +78,7 @@ namespace WPFProyecto_PAI
             }
             catch (Exception ex)
             {
-                //MessageBox.Show("Error al cargar trabajadores: " + ex.Message);
+                MessageBox.Show("Error al cargar trabajadores: " + ex.Message);
             }
         }
 
