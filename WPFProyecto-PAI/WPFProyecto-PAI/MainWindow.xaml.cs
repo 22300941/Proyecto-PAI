@@ -25,9 +25,6 @@ namespace WPFProyecto_PAI
 
 
 
-
-
-
         private string cadenaConexion;
 
         public MainWindow()
